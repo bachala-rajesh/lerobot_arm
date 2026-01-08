@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+  <robot name="sim_so101_follower">
+    <ros2_control name="so101_follower_sim" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
+
+      <joint name="shoulder_pan">
+        <command_interface name="position" />
+        <state_interface name="position"/>
+      </joint>
+      <joint name="shoulder_lift">      
+        <command_interface name="position" />
+        <state_interface name="position"/>
+      </joint>
+      <joint name="elbow_flex">      
+        <command_interface name="position" />
+        <state_interface name="position"/>
+      </joint>
+      <joint name="wrist_flex">
+        <command_interface name="position" />
+        <state_interface name="position"/>
+      </joint>
+      <joint name="wrist_roll">
+        <command_interface name="position" />
+        <state_interface name="position"/>
+      </joint>
+      <joint name="gripper">
+        <command_interface name="position" />
+        <state_interface name="position"/>
+      </joint>
+    </ros2_control>
+
+
+
+<!-- 
+    <gazebo>
+      <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>$(find so101_hw_interface)/config/sim_so101_controllers.yaml</parameters>
+      </plugin>
+    </gazebo> -->
+  </robot>

@@ -1,0 +1,10 @@
+build/
+install/
+log/
+__pycache__/
+*.pyc
+*.so
+.vscode/
+
+src/temp/
+TODO

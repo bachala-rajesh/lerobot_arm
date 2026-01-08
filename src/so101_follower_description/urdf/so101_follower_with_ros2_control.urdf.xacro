@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="so101_follower" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+    <xacro:arg name="sim_mode" default="gazebo" />
+
+    <!-- ros2 control and sensors for simulated robot in gazebo ignition -->
+    <xacro:if value="${'$(arg sim_mode)' == 'gazebo'}">
+        <xacro:include filename="$(find so101_follower_description)/urdf/ros2_control/sim_gazebo_so101_follower_ros2_control.urdf" />
+    </xacro:if>
+
+    <xacro:if value="${'$(arg sim_mode)' == 'isaacsim'}">
+    </xacro:if>
+
+    <xacro:if value="${'$(arg sim_mode)' == 'real_robot'}">
+        <xacro:include filename="$(find so101_follower_description)/urdf/ros2_control/real_so101_follower_ros2_control.urdf" />
+    </xacro:if>
+
+    <!-- robot description -->
+    <xacro:include filename="$(find so101_follower_description)/urdf/robots/so101_follower.urdf.xacro" />
+
+
+</robot>
