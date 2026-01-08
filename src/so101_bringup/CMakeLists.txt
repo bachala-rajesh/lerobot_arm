@@ -29,7 +29,7 @@ ament_python_install_package(${PROJECT_NAME})
 
 # Install Python executables (ROS nodes)
 install(PROGRAMS
-
+    so101_bringup/gui_sliders_arm_control.py
   
   DESTINATION lib/${PROJECT_NAME}
 )
