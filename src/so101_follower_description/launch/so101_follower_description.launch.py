@@ -21,7 +21,6 @@ def generate_launch_description() -> LaunchDescription:
     # Launch configurations
     ##################### 
     use_sim_time = LaunchConfiguration("use_sim_time")
-    use_gui = LaunchConfiguration('use_gui')
     sim_mode = LaunchConfiguration('sim_mode')
     
 
@@ -60,16 +59,7 @@ def generate_launch_description() -> LaunchDescription:
             ],
         emulate_tty=True,
     )
-    
-    # GUI sliders (only when use_gui=true)
-    joint_state_publisher_gui = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        name='joint_state_publisher_gui',
-        parameters= [{'use_sim_time': use_sim_time}],
-        condition=IfCondition(use_gui)
-    )
-    
+
     
 
  
@@ -80,12 +70,6 @@ def generate_launch_description() -> LaunchDescription:
                 "use_sim_time",
                 default_value="true",
                 description="Use simulation (Gazebo) clock if true",
-            ),
-            
-            DeclareLaunchArgument(
-                'use_gui',
-                default_value='true',
-                description='Whether to show joint_state_publisher_gui sliders'
             ),
             
             DeclareLaunchArgument(

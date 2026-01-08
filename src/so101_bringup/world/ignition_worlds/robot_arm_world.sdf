@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <world name="world_robotic_arm">
+    
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+
+
+
+
+
+    <!-- Light -->
+    <include>
+      <uri>model://Sun</uri>
+    </include>
+
+    <!-- Ground plane -->
+    <include>
+      <uri>model://Ground_Plane</uri>
+    </include>
+
+    <!-- Table -->
+    <include>
+      <uri>model://Table</uri>
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <name>Table</name>
+    </include>
+
+    <!-- wood cube -->
+    <include>
+      <uri>model://wood_cube_5cm</uri>
+      <pose>0 0 1.05 0 0 0</pose>
+      <name>wood_cube</name>
+    </include>
+
+
+  </world>
+</sdf>
