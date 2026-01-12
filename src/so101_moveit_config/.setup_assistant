@@ -1,0 +1,24 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: so101_follower_description
+    relative_path: urdf/arm_on_table.urdf.xacro
+    xacro_args: moveit_status:=true
+  srdf:
+    relative_path: config/so101_follower.srdf
+  package_settings:
+    author_name: Bachala Rajesh
+    author_email: bachala_rajesh@outlook.com
+    generated_timestamp: 1768212028
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position

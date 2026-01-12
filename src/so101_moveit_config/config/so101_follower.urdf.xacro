@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="so101_follower">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import so101_follower urdf file -->
+    <xacro:include filename="$(find so101_follower_description)/urdf/arm_on_table.urdf.xacro" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="so101_follower.ros2_control.xacro" />
+
+
+    <xacro:so101_follower_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>
