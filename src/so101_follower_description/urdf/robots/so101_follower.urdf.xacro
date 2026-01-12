@@ -3,14 +3,6 @@
 <!-- Onshape https://cad.onshape.com/documents/7715cc284bb430fe6dab4ffd/w/4fd0791b683777b02f8d975a/e/826c553ede3b7592eb9ca800 -->
 <robot name="so101_follower" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- World Link -->
-  <link name="world"/>
-
-  <joint name="world_to_base" type="fixed">
-    <parent link="world"/>
-    <child link="base_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
 
   <!-- Materials -->
   <material name="3d_printed">

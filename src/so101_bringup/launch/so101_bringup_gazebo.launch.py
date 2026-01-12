@@ -83,8 +83,8 @@ def generate_launch_description() -> LaunchDescription:
     
     # Spawn robot node
     x_pose = LaunchConfiguration("x_pose", default="0.0")
-    y_pose = LaunchConfiguration("y_pose", default="0.35")
-    z_pose = LaunchConfiguration("z_pose", default="0.98")
+    y_pose = LaunchConfiguration("y_pose", default="0.0")
+    z_pose = LaunchConfiguration("z_pose", default="0.0")
     yaw_pose = LaunchConfiguration("yaw_pose", default="0.00")
 
     spawn_robot_node = Node(

@@ -29,7 +29,7 @@ def generate_launch_description() -> LaunchDescription:
     #####################
     # Process the URDF file
     pkg_path = os.path.join(get_package_share_directory('so101_follower_description'))
-    xacro_file = os.path.join(pkg_path,'urdf','so101_follower_with_ros2_control.urdf.xacro')
+    xacro_file = os.path.join(pkg_path,'urdf','arm_on_table.urdf.xacro')
     robot_description_content = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]), 
         " ",

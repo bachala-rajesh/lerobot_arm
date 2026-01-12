@@ -73,21 +73,6 @@ def generate_launch_description():
         )
     )
 
-    trajectory_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "trajectory_controller",
-            "--inactive",
-            "--controller-manager",
-            "/controller_manager",
-            "--param-file",
-            controllers_yaml,
-        ],
-        parameters=[{"use_sim_time": use_sim_time}],
-        output="screen",
-    )
-
     joints_position_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",

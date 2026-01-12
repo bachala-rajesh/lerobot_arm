@@ -1,4 +1,4 @@
-                <?xml version="1.0"?>
+<?xml version="1.0"?>
 <robot name="so101_follower">
   <ros2_control name="so101_follower" type="system">
     <hardware>

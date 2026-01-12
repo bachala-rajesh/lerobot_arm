@@ -40,7 +40,7 @@ def generate_launch_description() -> LaunchDescription:
     
     #control node
     control_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "so101_control.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "joints_trajectory_control.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,

@@ -42,14 +42,7 @@
       <uri>model://Ground_Plane</uri>
     </include>
 
-    <!-- Table -->
-    <include>
-      <uri>model://Table</uri>
-      <static>true</static>
-      <pose>0 0 0 0 0 0</pose>
-      <name>Table</name>
-    </include>
-
+   
     <!-- wood cube -->
     <include>
       <uri>model://wood_cube_5cm</uri>
