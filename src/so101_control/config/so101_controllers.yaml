@@ -43,6 +43,7 @@ arm_controller:
     state_interfaces:
       - position
     action_ns: follow_joint_trajectory
+    allow_nonzero_velocity_at_trajectory_end: false
       
 gripper_controller:
   ros__parameters:
@@ -53,6 +54,8 @@ gripper_controller:
     state_interfaces:
       - position
     action_ns: follow_joint_trajectory
+    allow_nonzero_velocity_at_trajectory_end: false
+
 
 
 

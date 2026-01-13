@@ -14,11 +14,12 @@
 
         <xacro:if value="${'$(arg sim_mode)' == 'isaacsim'}">
         </xacro:if>
+    
+        <xacro:if value="${'$(arg sim_mode)' == 'real_robot'}">
+            <xacro:include filename="$(find so101_follower_description)/urdf/ros2_control/real_so101_follower_ros2_control.urdf" />
+        </xacro:if>
     </xacro:if>
 
-    <xacro:if value="${'$(arg sim_mode)' == 'real_robot'}">
-        <xacro:include filename="$(find so101_follower_description)/urdf/ros2_control/real_so101_follower_ros2_control.urdf" />
-    </xacro:if>
 
     <!-- robot description -->
     <xacro:include filename="$(find so101_follower_description)/urdf/robots/so101_follower.urdf.xacro" />

@@ -3,8 +3,8 @@
   <ros2_control name="so101_follower" type="system">
     <hardware>
       <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
-      <param name="joint_commands_topic">/so101_follower/joint_commands</param>
-      <param name="joint_states_topic">/so101_follower/joint_states</param>
+      <param name="joint_commands_topic">/hardware_interface/joint_commands</param>
+      <param name="joint_states_topic">/hardware_interface/joint_states</param>
     </hardware>
     <joint name="shoulder_pan">
       <param name="id">1</param>

@@ -19,9 +19,9 @@ def generate_launch_description() -> LaunchDescription:
     # get packages path 
     #####################
     pkg_bringup = get_package_share_directory("so101_bringup")
-    pkg_description = get_package_share_directory("so101_follower_description")
+    pkg_robot_description = get_package_share_directory("so101_follower_description")
     
-    so101_description_share_path = os.path.dirname(pkg_description)
+    so101_description_share_path = os.path.dirname(pkg_robot_description)
     
     # Set GAZEBO resource path to include biped_description package
     set_gazebo_resource_path = AppendEnvironmentVariable(
@@ -42,9 +42,9 @@ def generate_launch_description() -> LaunchDescription:
     # Nodes 
     #####################
     
-    # simulation robot node
-    sim_robot_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_description, "launch", "so101_follower_description.launch.py")),
+    # robot description node
+    robot_description_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "so101_follower_description.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": "gazebo",
@@ -122,7 +122,7 @@ def generate_launch_description() -> LaunchDescription:
                 description="Use simulation (Gazebo) clock if true",
             ),
 
-            sim_robot_node,
+            robot_description_node,
             gz_node,
             gz_bridge_node,
             spawn_robot_node,

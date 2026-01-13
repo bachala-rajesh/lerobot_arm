@@ -23,3 +23,6 @@ moveit_simple_controller_manager:
     type: FollowJointTrajectory
     joints:
       - gripper
+
+trajectory_execution:
+  allowed_start_tolerance: 0.05

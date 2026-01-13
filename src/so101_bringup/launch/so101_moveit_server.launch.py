@@ -43,7 +43,7 @@ def generate_launch_description():
             moveit_config.to_dict(),
             {"trajectory_execution.allowed_execution_duration_scaling": 2.0,},
             {"publish_robot_description_semantic": True},
-            {"use_sim_time": True},
+            {"use_sim_time": use_sim_time},
         ],
         emulate_tty=True,
     )
@@ -60,7 +60,7 @@ def generate_launch_description():
                    ],
         parameters=[
             moveit_config.to_dict(),   
-            {"use_sim_time": True}
+            {"use_sim_time": use_sim_time}
         ],
         emulate_tty=True,
     )
