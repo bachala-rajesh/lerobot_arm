@@ -1,6 +1,6 @@
 moveit_setup_assistant_config:
   urdf:
-    package: so101_follower_description
+    package: so101_description
     relative_path: urdf/arm_on_table.urdf.xacro
     xacro_args: moveit_status:=true
   srdf:

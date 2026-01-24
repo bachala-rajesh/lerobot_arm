@@ -20,7 +20,7 @@ def generate_launch_description():
     joint_states_topic = LaunchConfiguration('joint_states_topic')
 
     # Process the URDF file
-    pkg_path = os.path.join(get_package_share_directory('so101_follower_description'))
+    pkg_path = os.path.join(get_package_share_directory('so101_description'))
     xacro_file = os.path.join(pkg_path,'urdf', 'robots', 'so101_follower.urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file)
     robot_description = {'robot_description': robot_description_config.toxml()}
@@ -43,7 +43,7 @@ def generate_launch_description():
     )
     
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("so101_follower_description"), "rviz", "display.rviz"]
+        [FindPackageShare("so101_description"), "rviz", "display.rviz"]
     )
 
     rviz_node = Node(

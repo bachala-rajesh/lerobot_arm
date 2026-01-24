@@ -3,7 +3,7 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import so101_follower urdf file -->
-    <xacro:include filename="$(find so101_follower_description)/urdf/arm_on_table.urdf.xacro" />
+    <xacro:include filename="$(find so101_description)/urdf/arm_on_table.urdf.xacro" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="so101_follower.ros2_control.xacro" />

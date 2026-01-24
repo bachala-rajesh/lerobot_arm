@@ -19,7 +19,7 @@ def generate_launch_description() -> LaunchDescription:
     # get packages path 
     #####################
     pkg_bringup = get_package_share_directory("so101_bringup")
-    pkg_robot_description = get_package_share_directory("so101_follower_description")
+    pkg_robot_description = get_package_share_directory("so101_description")
     
     so101_description_share_path = os.path.dirname(pkg_robot_description)
     
@@ -44,7 +44,7 @@ def generate_launch_description() -> LaunchDescription:
     
     # robot description node
     robot_description_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "so101_follower_description.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "so101_description.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": "gazebo",
