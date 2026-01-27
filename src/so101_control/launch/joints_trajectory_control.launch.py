@@ -66,12 +66,6 @@ def generate_launch_description():
         parameters=[{"use_sim_time": use_sim_time}],
         output="screen",
         emulate_tty=True,
-        # Isaacsim publishes its own joint states, so no need to spawn this broadcaster.
-        condition=IfCondition(
-            PythonExpression([
-                "('", sim_mode, "' != 'isaacsim')"
-            ])
-        )
     )
     
     arm_controller_spawner = Node(

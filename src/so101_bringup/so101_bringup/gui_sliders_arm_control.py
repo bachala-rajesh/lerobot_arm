@@ -14,6 +14,8 @@ This version does NOT connect to ROS2.
 It only shows the window and lets you move sliders.
 """
 
+#TODO: modify the code to work in pyqt5
+
 from __future__ import annotations
 
 from typing import Dict, List, Optional
