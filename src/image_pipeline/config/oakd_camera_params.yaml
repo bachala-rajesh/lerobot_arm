@@ -1,0 +1,71 @@
+# save as oak_rgbstereo_nv12.yaml
+/oak:
+  ros__parameters:
+    camera:
+      i_pipeline_type: RGBD          # RGB + Left + Right only 
+      i_nn_type: none                     # no on-device NN
+      i_enable_ir: false                  # no IR
+      i_rs_compat: false                  # True enables to publish topics like real sense camera
+      i_tf_base_frame: oak_frame               # base_frame name and also the prefix of the other oak frames
+      i_tf_parent_frame: oak_base_frame
+      # i_tf_camera_name: oak                 # ????
+      i_publish_tf_from_calibration: false   # publishing TFs from extrinsics- important for stereo rectification
+      i_restart_on_diagnostics_error: true  # enabling auto restart on error
+
+
+    pipeline_gen: 
+      i_enable_diagnostics: true
+      i_enable_imu: true
+      i_enable_sync: true                 # to activate the sync node which enable sync beween all the frames
+
+    # ---------- RGB sensor --------------------------------------------------
+    rgb:
+      i_publish_topic: true               # /oak/rgb/image_raw + camera_info
+      i_enable_preview: false             # drop tiny preview
+      i_low_bandwidth: true               # H.264-encoded NV12 (saves ~8× BW) :contentReference[oaicite:1]{index=1}
+      i_low_bandwidth_quality: 50         # 50-80 is visually loss-less
+      i_output_isp: true                  # keep ISP NV12 path (no BGR conversion)
+      i_synced: true                      # enabling sync for RGB camera     
+      i_resolution: 1080P                 # IMX378 camera sensor - {"12MP", "4K", "1080P"}, default 1080P
+
+
+    # ---------- Left + Right mono sensors -----------------------------------
+    left:
+      # i_publish_topic: true               # /oak/left/image_raw
+      i_low_bandwidth: true
+      i_low_bandwidth_quality: 50         # 50-80 is visually loss-less
+      i_resolution: 400P                  # OV9282 camera sensor - {"800P", "720P", "400P"}, default 800P. Choosen 400P for better minimum depth.
+      i_synced: true  
+
+    right:
+      # i_publish_topic: true               # /oak/right/image_raw
+      i_low_bandwidth: true
+      i_low_bandwidth_quality: 50         # 50-80 is visually loss-less
+      i_resolution: 400P                  # OV9282 camera sensor - {"800P", "720P", "400P"}, default 800P. Choosen 400P for better minimum depth.
+      i_synced: true  
+
+
+    stereo:
+      i_publish_topic: true         
+      i_synced: true                # enabling sync for stereo camera
+
+      ##### disparity related parameters
+      i_output_disparity: false      # Enables disparity output
+      i_extended_disp: true       # detect closer object by extending disparity range. It is basically a window range over which left image and right image pixels can be compared
+      i_depth_preset: HIGH_ACCURACY
+      i_subpixel: true              # Improves depth precision
+      i_align_depth: true           # Aligns depth to RGB frame
+
+      ##### rectified left and right images
+      i_right_rect_publish_topic: true
+      i_left_rect_publish_topic: true
+      # i_publish_synced_rect_pair: true
+
+    imu:
+        i_message_type: IMU
+        i_update_ros_base_time_on_ros_msg: true
+
+
+
+    # ---------- Turn the rest completely off --------------------------------
+    tof.i_publish_topic: false           # no depth
