@@ -1,0 +1,48 @@
+/**:
+  ros__parameters:
+    # ==========================================
+    # LAYER 1: HARDWARE LAYOUT (The Physical Controller)
+    # ==========================================
+    joy_layout:
+      axes:
+        left_stick_y: 1       # Up/Down
+        left_stick_x: 0       # Left/Right
+        right_stick_y: 3      # Up/Down
+        right_stick_x: 4      # Left/Right
+        dpad_x: 6             # Left/Right Arrows
+        dpad_y: 7             # Up/Down Arrows
+        l2_trigger: 2         # Trigger
+        r2_trigger: 5         # Trigger
+
+      buttons:
+        cross: 0
+        circle: 1
+        square: 2
+        triangle: 3
+        start: 7
+        select: 6
+        l1_trigger: 4 
+        r1_trigger: 5
+
+    # ==========================================
+    # LAYER 2: TELEOP CONTROL MAP 
+    # ==========================================
+    teleop_control_map:
+
+      # Locomotion 
+      locomotion_control:
+        linear_x: "left_stick_x"       # Forward/Backward
+        linear_y: "left_stick_y"       # Strafe Left/Right
+        linear_z: "dpad_y"        # Forward/Backward (D-Pad)
+        roll: "right_stick_x"  # Roll Left/Right
+        pitch: "right_stick_y" # Pitch Up/Down
+        yaw: "dpad_x"        # Strafe Left/Right (D-Pad)
+
+
+      scale_control:
+        speed_scale: "triangle"          # Press to increase speed
+
+
+
+
+
