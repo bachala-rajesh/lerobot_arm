@@ -19,9 +19,9 @@ class SO101_SPEED:
     """Default and limit speeds for teleop linear and angular motion."""
 
     LINEAR_SPEED = 0.1
-    ANGULAR_SPEED = 0.1
+    ANGULAR_SPEED = 0.3
     MAX_LINEAR_SPEED = 0.3
-    MAX_ANGULAR_SPEED = 0.3
+    MAX_ANGULAR_SPEED = 1.0
     SPEED_SCALING = 3
 
 
@@ -76,7 +76,7 @@ class TeleopNode(Node):
         self.joy_subscriber = self.create_subscription(
             Joy, "joy", self.joy_callback, 10, callback_group=self.joy_callback_group
         )
-        self.vel_publisher = self.create_publisher(TwistStamped, "cmd_vel", 10)
+        self.vel_publisher = self.create_publisher(TwistStamped, "delta_twist_cmds", 10)
 
         # timer
         self.timer_ = self.create_timer(0.1, self.timer_callback)
@@ -198,7 +198,6 @@ class TeleopNode(Node):
         """
         if self.joy_msg_timestamp is None:
             self.get_logger().warn("No joystick data received.")
-            self.vel_publisher.publish(TwistStamped())
             return
 
         lin_speed = SO101_SPEED.LINEAR_SPEED
@@ -220,6 +219,7 @@ class TeleopNode(Node):
         # create speed command
         vel_cmd = TwistStamped()
         vel_cmd.header.stamp = self.joy_msg_timestamp
+        # vel_cmd.header.frame_id = "base_link"
 
         if self.cmd_map[ACTIONS.LINEAR_X]["value"] != 0.0:
             vel_cmd.twist.linear.x = math.copysign(
