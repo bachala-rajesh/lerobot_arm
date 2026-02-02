@@ -17,6 +17,9 @@ controller_manager:
     gripper_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
+    servo_position_controller:
+      type: forward_command_controller/ForwardCommandController
+
  
 
 joints_position_controller:
@@ -43,7 +46,7 @@ arm_controller:
     state_interfaces:
       - position
     action_ns: follow_joint_trajectory
-    allow_nonzero_velocity_at_trajectory_end: false
+    allow_nonzero_velocity_at_trajectory_end: true
       
 gripper_controller:
   ros__parameters:
@@ -54,8 +57,22 @@ gripper_controller:
     state_interfaces:
       - position
     action_ns: follow_joint_trajectory
-    allow_nonzero_velocity_at_trajectory_end: false
+    allow_nonzero_velocity_at_trajectory_end: true
 
 
-
+servo_position_controller:
+  ros__parameters:
+    joints:
+      - shoulder_pan
+      - shoulder_lift
+      - elbow_flex
+      - wrist_flex
+      - wrist_roll
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+    action_ns: follow_joint_trajectory
+    allow_nonzero_velocity_at_trajectory_end: true
 

@@ -1,0 +1,18 @@
+planning_plugins: "ompl_interface/OMPLPlanner"
+request_adapters: >-
+    default_planner_request_adapters/AddRuckigTrajectorySmoothing
+    default_planner_request_adapters/ResolveConstraintFrames
+    default_planner_request_adapters/FixWorkspaceBounds
+    default_planner_request_adapters/FixStartStateBounds
+    default_planner_request_adapters/FixStartStateCollision
+    default_planner_request_adapters/FixStartStatePathConstraints
+planner_configs:
+  RRTConnect:
+    type: geometric::RRTConnect
+    range: 0.0
+  RRTConnectkConfigDefault:
+    type: geometric::RRTConnect
+    range: 0.0
+  TRRT:
+    type: geometric::TRRT
+    range: 0.0
