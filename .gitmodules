@@ -1,0 +1,6 @@
+[submodule "feetech_ros2_driver"]
+	path = feetech_ros2_driver
+	url = https://github.com/legalaspro/feetech_ros2_driver.git
+[submodule "src/feetech_ros2_driver"]
+	path = src/feetech_ros2_driver
+	url = https://github.com/legalaspro/feetech_ros2_driver.git
