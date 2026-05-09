@@ -46,8 +46,8 @@ except ImportError:  # create stub
 
 # -----------------------------------------------------------------------------
 
-from so101_bringup.hardware_interface.motors.feetech.feetech import FeetechMotorsBus
-from so101_bringup.hardware_interface.motors import Motor, MotorNormMode
+from so101_bringup.legacy_hardware_interface.motors.feetech.feetech import FeetechMotorsBus
+from so101_bringup.legacy_hardware_interface.motors import Motor, MotorNormMode
 
 # PORT_DEFAULT = "/dev/ttyACM1"
 PORT_DEFAULT = "/dev/lerobot_follower"

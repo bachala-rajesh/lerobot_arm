@@ -8,3 +8,8 @@ __pycache__/
 
 src/temp/
 TODO
+
+
+src/test_pkg/
+CLAUDE.md
+AGENTS.md

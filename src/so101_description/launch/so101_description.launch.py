@@ -22,6 +22,8 @@ def generate_launch_description() -> LaunchDescription:
     ##################### 
     use_sim_time = LaunchConfiguration("use_sim_time")
     sim_mode = LaunchConfiguration('sim_mode')
+    usb_port = LaunchConfiguration('usb_port', default='/dev/lerobot_follower')
+    joint_config_file = LaunchConfiguration('joint_config_file', default='')
     
 
     ##################### 
@@ -31,12 +33,15 @@ def generate_launch_description() -> LaunchDescription:
     pkg_path = os.path.join(get_package_share_directory('so101_description'))
     xacro_file = os.path.join(pkg_path,'urdf','arm_on_table.urdf.xacro')
     robot_description_content = Command([
-        PathJoinSubstitution([FindExecutable(name="xacro")]), 
+        PathJoinSubstitution([FindExecutable(name="xacro")]),
         " ",
         xacro_file,
         " ",
-        "sim_mode:=", 
-        sim_mode
+        "sim_mode:=", sim_mode,
+        " ",
+        "usb_port:=", usb_port,
+        " ",
+        "joint_config_file:=", joint_config_file,
     ])
 
     #Wrap it in ParameterValue 
@@ -76,6 +81,16 @@ def generate_launch_description() -> LaunchDescription:
                 'sim_mode',
                 default_value='gazebo',
                 description='Simulation mode: isaacsim or gazebo'
+            ),
+            DeclareLaunchArgument(
+                'usb_port',
+                default_value='/dev/lerobot_follower',
+                description='Serial port for the Feetech hardware interface',
+            ),
+            DeclareLaunchArgument(
+                'joint_config_file',
+                default_value='',
+                description='Absolute path to the joint calibration YAML (homing_offset, range_min, range_max)',
             ),
             
             # log info about sim_mode

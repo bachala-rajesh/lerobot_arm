@@ -3,6 +3,8 @@
 
     <xacro:arg name="sim_mode" default="gazebo" />
     <xacro:arg name="moveit_status" default="false" />
+    <xacro:arg name="usb_port" default="/dev/lerobot_follower" />
+    <xacro:arg name="joint_config_file" default="" />
 
     <link name="world"/>
 

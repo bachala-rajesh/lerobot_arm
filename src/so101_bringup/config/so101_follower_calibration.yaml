@@ -1,25 +1,36 @@
-generated: '2025-11-24T16:19:26.123075'
-shoulder_pan:
-  range_min: 889
-  range_max: 3359
-  homing_offset: 2124
-shoulder_lift:
-  range_min: 882
-  range_max: 3248
-  homing_offset: 2065
-elbow_flex:
-  range_min: 867
-  range_max: 3075
-  homing_offset: 1971
-wrist_flex:
-  range_min: 837
-  range_max: 3186
-  homing_offset: 2011
-wrist_roll:
-  range_min: 52
-  range_max: 3870
-  homing_offset: 1961
-gripper:
-  range_min: 2046
-  range_max: 3485
-  homing_offset: 2100
+joints:
+  shoulder_pan:
+    id: 1
+    homing_offset: 1965
+    range_min: 997
+    range_max: 3366
+
+  shoulder_lift:
+    id: 2
+    homing_offset: -1423
+    range_min: 898
+    range_max: 3020
+
+  elbow_flex:
+    id: 3
+    homing_offset: -1692
+    range_min: 1062
+    range_max: 3036
+
+  wrist_flex:
+    id: 4
+    homing_offset: -1718
+    range_min: 990
+    range_max: 2900
+
+  wrist_roll:
+    id: 5
+    homing_offset: 1783
+    range_min: 260
+    range_max: 3940
+
+  gripper:
+    id: 6
+    homing_offset: 1402
+    range_min: 2046
+    range_max: 3072

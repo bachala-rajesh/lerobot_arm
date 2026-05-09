@@ -17,6 +17,7 @@ from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 
 class SO101_SPEED:
     """Default and limit speeds for teleop linear and angular motion."""
+    
 
     LINEAR_SPEED = 0.1
     ANGULAR_SPEED = 0.3

@@ -27,8 +27,8 @@ import rclpy
 from rclpy.node import Node
 import yaml
 
-from so101_bringup.hardware_interface.motors.feetech.feetech import FeetechMotorsBus
-from so101_bringup.hardware_interface.motors import Motor, MotorNormMode
+from so101_bringup.legacy_hardware_interface.motors.feetech.feetech import FeetechMotorsBus
+from so101_bringup.legacy_hardware_interface.motors import Motor, MotorNormMode
 
 JOINTS = {
     "shoulder_pan": {"id": 1, "model": "sts3215"},

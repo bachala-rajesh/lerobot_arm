@@ -104,6 +104,15 @@ def generate_launch_description() -> LaunchDescription:
     )
     
     
+    # moveit server launch file
+    moveit_server_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "so101_moveit_server_sim.launch.py")),
+        launch_arguments={
+            "use_sim_time": use_sim_time,
+        }.items(),
+    )
+    
+    
     
     
     
@@ -126,5 +135,6 @@ def generate_launch_description() -> LaunchDescription:
             gz_node,
             gz_bridge_node,
             spawn_robot_node,
+            moveit_server_node,
         ]
     )
