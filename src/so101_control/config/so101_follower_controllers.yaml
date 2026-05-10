@@ -1,7 +1,5 @@
 
-# This config file is used by ros2_control
-
-controller_manager:
+/follower/controller_manager:
   ros__parameters:
     update_rate: 100
 
@@ -17,9 +15,7 @@ controller_manager:
     gripper_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
- 
-
-joints_position_controller:
+/follower/joints_position_controller:
   ros__parameters:
     joints:
       - shoulder_pan
@@ -29,8 +25,7 @@ joints_position_controller:
       - wrist_roll
       - gripper
 
-
-arm_controller:
+/follower/arm_controller:
   ros__parameters:
     joints:
       - shoulder_pan
@@ -42,10 +37,11 @@ arm_controller:
       - position
     state_interfaces:
       - position
+      - velocity
     action_ns: follow_joint_trajectory
     allow_nonzero_velocity_at_trajectory_end: false
-      
-gripper_controller:
+
+/follower/gripper_controller:
   ros__parameters:
     joints:
       - gripper
@@ -53,9 +49,6 @@ gripper_controller:
       - position
     state_interfaces:
       - position
+      - velocity
     action_ns: follow_joint_trajectory
     allow_nonzero_velocity_at_trajectory_end: false
-
-
-
-

@@ -50,7 +50,7 @@ class RosArmPositionsPublisher(Node):
         self._joint_names: List[str] = joint_names
         self._pos_publisher = self.create_publisher(
             Float64MultiArray,
-            "/joints_position_controller/commands",
+            "/follower/joints_position_controller/commands",
             10
         )
         

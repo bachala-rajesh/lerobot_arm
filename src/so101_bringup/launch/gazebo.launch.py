@@ -3,14 +3,11 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import IfCondition
-from launch.actions import AppendEnvironmentVariable
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -81,50 +78,42 @@ def generate_launch_description() -> LaunchDescription:
     )
     
     
-    # Spawn robot node
-    x_pose = LaunchConfiguration("x_pose", default="0.0")
-    y_pose = LaunchConfiguration("y_pose", default="0.0")
-    z_pose = LaunchConfiguration("z_pose", default="0.0")
-    yaw_pose = LaunchConfiguration("yaw_pose", default="0.00")
+    # Spawn scene (world + table) — reads from /robot_description published by scene_state_publisher
+    spawn_scene_node = Node(
+        package="ros_gz_sim",
+        executable="create",
+        arguments=["-topic", "/robot_description", "-name", "scene"],
+        parameters=[{"use_sim_time": use_sim_time}],
+        output="screen",
+    )
 
+    # Spawn follower arm — reads from /follower/robot_description.
+    # Position in Gazebo world = table_link position (z=0.5) + static TF offset (y=0.25, z=0.47).
     spawn_robot_node = Node(
         package="ros_gz_sim",
         executable="create",
-        arguments=["-topic", "robot_description",
-                    "-x", x_pose,
-                    "-y", y_pose,
-                    "-z", z_pose,      
-                    "-Y", yaw_pose,    
-                    ],
-        parameters=[
-            {"use_sim_time": use_sim_time},
-        ],
+        arguments=["-topic", "/follower/robot_description",
+                   "-name", "follower",
+                   "-x", "0.0",
+                   "-y", "0.25",
+                   "-z", "0.97",
+                   "-Y", "0.0",
+                   ],
+        parameters=[{"use_sim_time": use_sim_time}],
         emulate_tty=True,
         output="screen",
     )
-    
-    
-    # moveit server launch file
-    moveit_server_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "so101_moveit_server_sim.launch.py")),
-        launch_arguments={
-            "use_sim_time": use_sim_time,
-        }.items(),
-    )
-    
-    
-    
     
     
 
     #####################
     # creating LaunchDescription
     #####################
-    
+
     return LaunchDescription(
         [
             set_gazebo_resource_path,
-            
+
             DeclareLaunchArgument(
                 "use_sim_time",
                 default_value="true",
@@ -134,7 +123,7 @@ def generate_launch_description() -> LaunchDescription:
             robot_description_node,
             gz_node,
             gz_bridge_node,
+            spawn_scene_node,
             spawn_robot_node,
-            moveit_server_node,
         ]
     )

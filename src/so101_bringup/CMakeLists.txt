@@ -35,8 +35,6 @@ ament_python_install_package(lerobot)
 # Install Python executables (ROS nodes)
 install(PROGRAMS
     so101_bringup/gui_sliders_arm_control.py
-    so101_bringup/hardware_interface/calibrate_arm.py
-    so101_bringup/hardware_interface/motor_bridge.py
   
   DESTINATION lib/${PROJECT_NAME}
 )
