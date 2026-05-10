@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
   <robot name="so101_follower">
-    <ros2_control name="so101_follower_sim" type="system">
+    <ros2_control name="so101_$(arg arm_type)_sim" type="system">
       <hardware>
         <plugin>gz_ros2_control/GazeboSimSystem</plugin>
       </hardware>

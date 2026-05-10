@@ -19,45 +19,28 @@ def generate_launch_description() -> LaunchDescription:
     #####################
     pkg_bringup = get_package_share_directory("so101_bringup")
     pkg_control = get_package_share_directory("so101_control")
-    pkg_robot_description = get_package_share_directory("so101_description")
    
     
     ##################### 
     # launch arguments and configurations related 
     #####################
-    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
-    sim_mode = LaunchConfiguration("sim_mode", default="real_robot")
+    use_sim_time = LaunchConfiguration("use_sim_time", default="true")
+    sim_mode = LaunchConfiguration("sim_mode", default="gazebo")
 
 
 
     #####################
     # Nodes 
     #####################
-    # robot description node
-    robot_description_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "follower_description.launch.py")),
-        launch_arguments={
-            "use_sim_time": use_sim_time,
-            "sim_mode": sim_mode,
-        }.items(),
-    )
     
-    # real robot bringup node
-    real_robot_bringup_node = Node(
-        package="so101_bringup",
-        executable="motor_bridge.py",
-        name="real_robot_bringup",
-        output="screen",
-        parameters=[
-            {"use_sim_time": use_sim_time},
-        ],
-        emulate_tty=True,
+    # simulation robot bringup node
+    sim_robot_bringup_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "follower_gazebo.launch.py")),
     )
-    
     
     #control node
     control_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "joints_trajectory_control.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "follower_joints_trajectory_control.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,
@@ -73,17 +56,16 @@ def generate_launch_description() -> LaunchDescription:
         [
             DeclareLaunchArgument(
                 "use_sim_time",
-                default_value="false",
+                default_value="true",
                 description="Use simulation (Gazebo) clock if true",
             ),
             DeclareLaunchArgument(
                 "sim_mode",
-                default_value="real_robot",
-                description="Simulation mode: gazebo or isaacsim or real_robot",
+                default_value="gazebo",
+                description="Simulation mode: gazebo or isaacsim",
             ),
             
-            robot_description_node,
-            real_robot_bringup_node,
+            sim_robot_bringup_node,
             control_node,
         ]
     )

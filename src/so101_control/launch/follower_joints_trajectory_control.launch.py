@@ -84,5 +84,5 @@ def generate_launch_description():
         ),
 
         controller_manager_group,
-        TimerAction(period=5.0, actions=controller_spawners),
+        TimerAction(period=3.0, actions=controller_spawners),
     ])

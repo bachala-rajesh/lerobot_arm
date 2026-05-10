@@ -441,8 +441,5 @@
     </actuator>
   </transmission>
 
-  <gazebo>  
-    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so"/>
-  </gazebo>
 
 </robot>

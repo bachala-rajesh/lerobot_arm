@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="so101_follower" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <ros2_control name="so101_follower" type="system">
+  <ros2_control name="sso101_$(arg arm_type)_sim" type="system">
     <hardware>
       <plugin>feetech_ros2_driver/FeetechHardwareInterface</plugin>
       <param name="usb_port">$(arg usb_port)</param>

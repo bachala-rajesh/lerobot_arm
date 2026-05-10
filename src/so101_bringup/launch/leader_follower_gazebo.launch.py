@@ -3,7 +3,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, TimerAction, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -41,7 +41,7 @@ def generate_launch_description() -> LaunchDescription:
     
     # robot description node
     robot_description_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "so101_description.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "leader_follower_description.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": "gazebo",
@@ -89,19 +89,41 @@ def generate_launch_description() -> LaunchDescription:
 
     # Spawn follower arm — reads from /follower/robot_description.
     # Position in Gazebo world = table_link position (z=0.5) + static TF offset (y=0.25, z=0.47).
-    spawn_robot_node = Node(
+    spawn_follower_node = Node(
         package="ros_gz_sim",
         executable="create",
         arguments=["-topic", "/follower/robot_description",
                    "-name", "follower",
-                   "-x", "0.0",
-                   "-y", "0.25",
+                   "-x", "0.25",
+                   "-y", "0.4",
                    "-z", "0.97",
                    "-Y", "0.0",
                    ],
         parameters=[{"use_sim_time": use_sim_time}],
         emulate_tty=True,
         output="screen",
+    )
+    
+    # Spawn leader arm — delayed 5 s after follower so each model's
+    # gz_ros2_control plugin fully initialises before the next one starts.
+    # Both models share Gz Sim's EntityComponentManager; simultaneous
+    # initialisation causes a race when both claim joints of the same name.
+    spawn_leader_node = TimerAction(
+        period=5.0,
+        actions=[Node(
+            package="ros_gz_sim",
+            executable="create",
+            arguments=["-topic", "/leader/robot_description",
+                       "-name", "leader",
+                       "-x", "-0.25",
+                       "-y", "0.4",
+                       "-z", "0.97",
+                       "-Y", "0.0",
+                       ],
+            parameters=[{"use_sim_time": use_sim_time}],
+            emulate_tty=True,
+            output="screen",
+        )],
     )
     
     
@@ -124,6 +146,7 @@ def generate_launch_description() -> LaunchDescription:
             gz_node,
             gz_bridge_node,
             spawn_scene_node,
-            spawn_robot_node,
+            spawn_follower_node,
+            spawn_leader_node,
         ]
     )

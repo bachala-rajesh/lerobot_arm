@@ -12,7 +12,7 @@ def generate_launch_description():
     controllers_yaml = os.path.join(
         get_package_share_directory('so101_control'),
         'config',
-        'so101_follower_controllers.yaml',
+        'so101_leader_controllers.yaml',
     )
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
@@ -24,7 +24,7 @@ def generate_launch_description():
             PythonExpression(["'", sim_mode, "' != 'gazebo'"])
         ),
         actions=[
-            PushRosNamespace('follower'),
+            PushRosNamespace('leader'),
             Node(
                 package='controller_manager',
                 executable='ros2_control_node',
@@ -46,7 +46,7 @@ def generate_launch_description():
             package='controller_manager',
             executable='spawner',
             arguments=['joint_state_broadcaster',
-                       '--controller-manager', '/follower/controller_manager'],
+                       '--controller-manager', '/leader/controller_manager'],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen',
             emulate_tty=True,
@@ -54,8 +54,17 @@ def generate_launch_description():
         Node(
             package='controller_manager',
             executable='spawner',
-            arguments=['joints_position_controller',
-                       '--controller-manager', '/follower/controller_manager'],
+            arguments=['arm_controller',
+                       '--controller-manager', '/leader/controller_manager'],
+            parameters=[{'use_sim_time': use_sim_time}],
+            output='screen',
+            emulate_tty=True,
+        ),
+        Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=['gripper_controller',
+                       '--controller-manager', '/leader/controller_manager'],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen',
             emulate_tty=True,

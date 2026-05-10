@@ -38,6 +38,7 @@ def generate_launch_description():
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
+        namespace="follower",
         output="screen",
         parameters=[
             moveit_config.to_dict(),
@@ -47,11 +48,12 @@ def generate_launch_description():
         ],
         emulate_tty=True,
     )
-    
+
     rviz_config = os.path.join(pkg_bringup, "rviz", "moveit.rviz")
     rviz_moveit_node = Node(
         package="rviz2",
         executable="rviz2",
+        namespace="follower",
         name="rviz2",
         output="screen",
         arguments=[
@@ -59,7 +61,7 @@ def generate_launch_description():
                     "--ros-args", "--log-level", "WARN"
                    ],
         parameters=[
-            moveit_config.to_dict(),   
+            moveit_config.to_dict(),
             {"use_sim_time": use_sim_time}
         ],
         emulate_tty=True,

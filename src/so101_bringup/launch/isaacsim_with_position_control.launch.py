@@ -37,7 +37,7 @@ def generate_launch_description() -> LaunchDescription:
     
     # robot description node
     robot_description_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "so101_description.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "follower_description.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,

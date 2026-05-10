@@ -35,12 +35,21 @@ def generate_launch_description() -> LaunchDescription:
     
     # simulation robot bringup node
     sim_robot_bringup_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "gazebo.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "leader_follower_gazebo.launch.py")),
     )
     
-    #control node
-    control_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "follower_joints_position_control.launch.py")),
+    # follower control node
+    follower_control_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "follower_joints_trajectory_control.launch.py")),
+        launch_arguments={
+            "use_sim_time": use_sim_time,
+            "sim_mode": sim_mode,
+        }.items(),
+    ) 
+    
+    # leader control node
+    leader_control_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "leader_joints_position_control.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,
@@ -66,6 +75,7 @@ def generate_launch_description() -> LaunchDescription:
             ),
             
             sim_robot_bringup_node,
-            control_node,
+            follower_control_node,
+            leader_control_node,
         ]
     )

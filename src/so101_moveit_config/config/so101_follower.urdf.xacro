@@ -2,13 +2,20 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="so101_follower">
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
-    <!-- Import so101_follower urdf file -->
-    <xacro:include filename="$(find so101_description)/urdf/arm_on_table.urdf.xacro" />
+    <!-- World anchor — mirrors so101_arm_with_control.urdf.xacro so MoveIt has a root frame -->
+    <link name="world"/>
+    <joint name="world_joint" type="fixed">
+        <parent link="world"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
 
-    <!-- Import control_xacro -->
+    <!-- Robot geometry (links, joints, meshes) -->
+    <xacro:include filename="$(find so101_description)/urdf/robots/so101_arm.urdf.xacro" />
+
+    <!-- ros2_control with mock hardware for standalone MoveIt demo (demo.launch.py).
+         Ignored by move_group when running against Gazebo / real hardware. -->
     <xacro:include filename="so101_follower.ros2_control.xacro" />
-
-
     <xacro:so101_follower_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 
 </robot>
