@@ -44,7 +44,7 @@ def generate_launch_description() -> LaunchDescription:
         PathJoinSubstitution([FindExecutable(name='xacro')]),
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
-        ' arm_type:=leader',
+        ' arm_prefix:=leader',
         ' command:=', leader_command,
         ' usb_port:=', leader_usb_port,
         ' joint_config_file:=', leader_joint_config_file,
@@ -71,7 +71,7 @@ def generate_launch_description() -> LaunchDescription:
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_tf_leader_base',
-        arguments=['0', '-0.25', '0.47', '0', '0', '0', 'table_link', 'leader/base_link'],
+        arguments=['0', '-0.25', '0.47', '0', '0', '0', 'table_link', 'leader_world'],
     )
 
 
@@ -85,13 +85,8 @@ def generate_launch_description() -> LaunchDescription:
             executable='robot_state_publisher',
             parameters=[{
                 'robot_description': ParameterValue(leader_description, value_type=str),
-                'frame_prefix': 'leader/',
                 'use_sim_time': use_sim_time,
             }],
-            remappings=[
-                ('tf', '/tf'),
-                ('tf_static', '/tf_static'),
-            ],
             output='screen',
         ),
     ])

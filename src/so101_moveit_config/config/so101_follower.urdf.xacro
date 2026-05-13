@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="so101_follower">
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+    <!-- arm_prefix: "follower" or "leader" — must match what bringup RSP uses -->
+    <xacro:arg name="arm_prefix" default="follower" />
 
     <!-- World anchor — mirrors so101_arm_with_control.urdf.xacro so MoveIt has a root frame -->
-    <link name="world"/>
+    <link name="$(arg arm_prefix)_world"/>
     <joint name="world_joint" type="fixed">
-        <parent link="world"/>
-        <child link="base_link"/>
+        <parent link="$(arg arm_prefix)_world"/>
+        <child link="$(arg arm_prefix)_base_link"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 

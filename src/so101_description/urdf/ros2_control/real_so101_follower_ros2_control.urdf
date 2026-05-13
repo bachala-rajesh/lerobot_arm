@@ -4,7 +4,7 @@
        command:=false → no command interfaces, servos are torque-free / backdrivable (leader) -->
   <xacro:arg name="command" default="true" />
 
-  <ros2_control name="sso101_$(arg arm_type)_sim" type="system">
+  <ros2_control name="sso101_$(arg arm_prefix)_sim" type="system">
     <hardware>
       <plugin>feetech_ros2_driver/FeetechHardwareInterface</plugin>
       <param name="usb_port">$(arg usb_port)</param>

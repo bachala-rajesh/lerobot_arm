@@ -51,7 +51,7 @@ def generate_launch_description() -> LaunchDescription:
         PathJoinSubstitution([FindExecutable(name='xacro')]),
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
-        ' arm_type:=follower',
+        ' arm_prefix:=follower',
         ' usb_port:=', follower_usb_port,
         ' real_robot_joint_config:=', follower_real_robot_joint_config,
         ' gazebo_controllers_config:=', follower_gazebo_controllers_config,
@@ -62,7 +62,7 @@ def generate_launch_description() -> LaunchDescription:
         PathJoinSubstitution([FindExecutable(name='xacro')]),
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
-        ' arm_type:=leader',
+        ' arm_prefix:=leader',
         ' usb_port:=', leader_usb_port,
         ' real_robot_joint_config:=', leader_real_robot_joint_config,
         ' gazebo_controllers_config:=', leader_gazebo_controllers_config,
@@ -91,14 +91,14 @@ def generate_launch_description() -> LaunchDescription:
         executable='static_transform_publisher',
         name='static_tf_follower_base',
         # args: x  y     z     yaw pitch roll  parent        child
-        arguments=['-0.25', '0.4', '0.47', '0', '0', '0', 'table_link', 'follower/world'],
+        arguments=['-0.25', '0.4', '0.47', '0', '0', '0', 'table_link', 'follower_world'],
     )
 
     static_tf_leader = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_tf_leader_base',
-        arguments=['0.25', '0.4', '0.47', '0', '0', '0', 'table_link', 'leader/world'],
+        arguments=['0.25', '0.4', '0.47', '0', '0', '0', 'table_link', 'leader_world'],
     )
 
     #####################
@@ -111,10 +111,8 @@ def generate_launch_description() -> LaunchDescription:
             executable='robot_state_publisher',
             parameters=[{
                 'robot_description': ParameterValue(follower_description, value_type=str),
-                'frame_prefix': 'follower/',
                 'use_sim_time': use_sim_time,
             }],
-            # Redirect TF to global topics — TF2 only listens to /tf and /tf_static,
             remappings=[
                 ('tf', '/tf'),
                 ('tf_static', '/tf_static'),
@@ -133,7 +131,6 @@ def generate_launch_description() -> LaunchDescription:
             executable='robot_state_publisher',
             parameters=[{
                 'robot_description': ParameterValue(leader_description, value_type=str),
-                'frame_prefix': 'leader/',
                 'use_sim_time': use_sim_time,
             }],
             remappings=[

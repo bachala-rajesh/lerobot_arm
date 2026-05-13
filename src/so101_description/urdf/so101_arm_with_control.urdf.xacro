@@ -11,9 +11,11 @@
     <xacro:arg name="moveit_status"           default="false" />
     <xacro:arg name="usb_port"                default="/dev/lerobot_follower" />
     <xacro:arg name="real_robot_joint_config"       default="" />
-    <xacro:arg name="arm_type"                default="follower" />
     <xacro:arg name="command"                default="true" />
     <xacro:arg name="gazebo_controllers_config" default="$(find so101_control)/config/so101_follower_controllers.yaml" />
+    <xacro:arg name="arm_prefix" default="follower" />
+    <!-- Prefix for all URDF link names: "follower_" or "leader_".
+         Keeps both arms' TF frames unique in the global tree. -->
 
     <!-- ros2_control hardware interface — skipped when moveit_status=true -->
     <xacro:if value="${'$(arg moveit_status)' == 'false'}">
@@ -32,15 +34,26 @@
 
     </xacro:if>
 
-    <!-- World anchor: Gazebo merges a model's 'world' link with its world frame,
-         so the arm is fixed at its spawn position instead of falling under gravity.
-         For real hardware this just adds a zero-offset root frame to the TF chain. -->
-    <link name="world"/>
-    <joint name="world_joint" type="fixed">
-        <parent link="world"/>
-        <child link="base_link"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-    </joint>
+    <!-- World anchor.
+         Gazebo requires this link to be literally named "world" to anchor the model.
+         For real hardware / MoveIt, use the prefixed name so both arms' TF chains
+         are unique in the global tree without frame_prefix. -->
+    <xacro:if value="${'$(arg sim_mode)' == 'gazebo'}">
+        <link name="world"/>
+        <joint name="world_joint" type="fixed">
+            <parent link="world"/>
+            <child link="$(arg arm_prefix)_base_link"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+    </xacro:if>
+    <xacro:unless value="${'$(arg sim_mode)' == 'gazebo'}">
+        <link name="$(arg arm_prefix)_world"/>
+        <joint name="world_joint" type="fixed">
+            <parent link="$(arg arm_prefix)_world"/>
+            <child link="$(arg arm_prefix)_base_link"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+    </xacro:unless>
 
     <!-- Robot links and joints (base_link → jaw_link) -->
     <xacro:include filename="$(find so101_description)/urdf/robots/so101_arm.urdf.xacro" />
