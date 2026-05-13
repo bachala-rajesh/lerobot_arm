@@ -10,8 +10,9 @@
     <xacro:arg name="sim_mode"                default="real_robot" />
     <xacro:arg name="moveit_status"           default="false" />
     <xacro:arg name="usb_port"                default="/dev/lerobot_follower" />
-    <xacro:arg name="joint_config_file"       default="" />
+    <xacro:arg name="real_robot_joint_config"       default="" />
     <xacro:arg name="arm_type"                default="follower" />
+    <xacro:arg name="command"                default="true" />
     <xacro:arg name="gazebo_controllers_config" default="$(find so101_control)/config/so101_follower_controllers.yaml" />
 
     <!-- ros2_control hardware interface — skipped when moveit_status=true -->

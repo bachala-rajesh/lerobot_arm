@@ -35,7 +35,8 @@ ament_python_install_package(lerobot)
 # Install Python executables (ROS nodes)
 install(PROGRAMS
     so101_bringup/gui_sliders_arm_control.py
-  
+    so101_bringup/leader_follower_relay.py
+    lerobot_sts_servo_scripts/set_home_offsets.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -1,50 +1,66 @@
 <?xml version="1.0"?>
 <robot name="so101_follower" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- command:=true  → position command interfaces enabled, servos hold position (follower)
+       command:=false → no command interfaces, servos are torque-free / backdrivable (leader) -->
+  <xacro:arg name="command" default="true" />
+
   <ros2_control name="sso101_$(arg arm_type)_sim" type="system">
     <hardware>
       <plugin>feetech_ros2_driver/FeetechHardwareInterface</plugin>
       <param name="usb_port">$(arg usb_port)</param>
-      <param name="joint_config_file">$(arg joint_config_file)</param>
+      <param name="joint_config_file">$(arg real_robot_joint_config)</param>
     </hardware>
 
     <joint name="shoulder_pan">
       <param name="id">1</param>
-      <command_interface name="position"/>
+      <xacro:if value="$(arg command)">
+        <command_interface name="position"/>
+      </xacro:if>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
 
     <joint name="shoulder_lift">
       <param name="id">2</param>
-      <command_interface name="position"/>
+      <xacro:if value="$(arg command)">
+        <command_interface name="position"/>
+      </xacro:if>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
 
     <joint name="elbow_flex">
       <param name="id">3</param>
-      <command_interface name="position"/>
+      <xacro:if value="$(arg command)">
+        <command_interface name="position"/>
+      </xacro:if>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
 
     <joint name="wrist_flex">
       <param name="id">4</param>
-      <command_interface name="position"/>
+      <xacro:if value="$(arg command)">
+        <command_interface name="position"/>
+      </xacro:if>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
 
     <joint name="wrist_roll">
       <param name="id">5</param>
-      <command_interface name="position"/>
+      <xacro:if value="$(arg command)">
+        <command_interface name="position"/>
+      </xacro:if>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
 
     <joint name="gripper">
       <param name="id">6</param>
-      <command_interface name="position"/>
+      <xacro:if value="$(arg command)">
+        <command_interface name="position"/>
+      </xacro:if>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>

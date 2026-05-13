@@ -12,7 +12,7 @@ def generate_launch_description():
     controllers_yaml = os.path.join(
         get_package_share_directory('so101_control'),
         'config',
-        'so101_leader_controllers.yaml',
+        'so101_leader_controllers_joint_states.yaml',
     )
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
@@ -46,24 +46,6 @@ def generate_launch_description():
             package='controller_manager',
             executable='spawner',
             arguments=['joint_state_broadcaster',
-                       '--controller-manager', '/leader/controller_manager'],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen',
-            emulate_tty=True,
-        ),
-        Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=['arm_controller',
-                       '--controller-manager', '/leader/controller_manager'],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen',
-            emulate_tty=True,
-        ),
-        Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=['gripper_controller',
                        '--controller-manager', '/leader/controller_manager'],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen',

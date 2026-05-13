@@ -1,0 +1,23 @@
+# Calibration backup
+# Arm  : leader
+# Date : 2026-05-13 12:09:13
+
+joints:
+  shoulder_pan:
+    id: 1
+    homing_offset: 1877
+  shoulder_lift:
+    id: 2
+    homing_offset: 1147
+  elbow_flex:
+    id: 3
+    homing_offset: -1210
+  wrist_flex:
+    id: 4
+    homing_offset: -1041
+  wrist_roll:
+    id: 5
+    homing_offset: -1651
+  gripper:
+    id: 6
+    homing_offset: 246

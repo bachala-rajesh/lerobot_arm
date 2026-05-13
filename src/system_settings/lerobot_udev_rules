@@ -1,0 +1,13 @@
+# set the udev rule 
+
+# rule for lerobot leader
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", ATTRS{serial}=="5AAF218692", MODE="0666", SYMLINK+="lerobot_leader"
+
+# rule for lerobot follower 
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", ATTRS{serial}=="5AB9064827", MODE="0666", SYMLINK+="lerobot_follower"
+
+# top camera
+SUBSYSTEM=="video4linux", KERNEL=="video*", ATTR{index}=="0", ENV{ID_PATH}=="pci-0000:00:14.0-usb-0:9:1.0", MODE="0666", SYMLINK+="camera_top"
+
+# wrist camera (attached to the follower)
+SUBSYSTEM=="video4linux", KERNEL=="video*", ATTR{index}=="0", ENV{ID_PATH}=="pci-0000:00:14.0-usb-0:13.3:1.0", MODE="0666", SYMLINK+="camera_wrist"

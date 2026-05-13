@@ -1,7 +1,18 @@
-import scservo_sdk as scs
+import argparse
 import time
+import scservo_sdk as scs
 
-ph = scs.PortHandler('/dev/lerobot_follower')
+PORTS = {'leader': '/dev/lerobot_leader', 'follower': '/dev/lerobot_follower'}
+
+parser = argparse.ArgumentParser(description='Set Return_Level=2 on all servos of an arm.')
+parser.add_argument('--arm', choices=['leader', 'follower'], default='follower',
+                    help='Which arm to connect to (default: follower)')
+args = parser.parse_args()
+
+PORT = PORTS[args.arm]
+print(f'Connecting to {args.arm} arm on {PORT}')
+
+ph = scs.PortHandler(PORT)
 pkt = scs.PacketHandler(0)
 ph.openPort()
 ph.setBaudRate(1000000)
