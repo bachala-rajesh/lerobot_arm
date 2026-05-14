@@ -20,9 +20,16 @@ def generate_launch_description() -> LaunchDescription:
     
     
     # real leader robot bringup node (without control only joint states)
-    leader_robot_bringup_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "real_leader.launch.py")),
+    leader_robot_bringup_node = TimerAction(
+        period=3.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "real_leader.launch.py")),
+                launch_arguments=[("use_sim_time", "true")],
+            ),
+        ],
     )
+    
     
     # sim follower robot bringup node (with trajectory control)
     follower_robot_bringup_node = IncludeLaunchDescription(

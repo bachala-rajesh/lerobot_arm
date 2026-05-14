@@ -81,6 +81,11 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="false",
                 description="Enable command interface for the leader arm",
             ),
+            DeclareLaunchArgument(
+                "use_sim_time",
+                default_value="false",
+                description="Use sim time if true",
+            ),
             description_launch,
             control_node,
         ]
