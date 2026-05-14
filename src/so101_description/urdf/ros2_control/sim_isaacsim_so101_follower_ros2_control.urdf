@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="so101_follower">
+<robot name="so101_arm">
   <ros2_control name="so101_$(arg arm_prefix)_isaacsim" type="system">
     <hardware>
       <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>

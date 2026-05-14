@@ -45,12 +45,12 @@ from std_msgs.msg import Float64MultiArray
 
 
 class RosArmPositionsPublisher(Node):
-    def __init__(self, joint_names: List[str]) -> None :
+    def __init__(self, joint_names: List[str], arm_name: str) -> None :
         super().__init__("arm_position_gui_node")
         self._joint_names: List[str] = joint_names
         self._pos_publisher = self.create_publisher(
             Float64MultiArray,
-            "/leader/joints_position_controller/commands",
+            f"/{arm_name}/joints_position_controller/commands",
             10
         )
         
@@ -206,6 +206,15 @@ class ArmSlidersWindow(QMainWindow):
         
 
 def main() -> None:
+    choice = input("Choose 'press 1' for leader, or 'press 2' for follower: ")
+    if choice == "1":
+        arm_name = "leader"
+    elif choice == "2":
+        arm_name = "follower"
+    else:
+        print("Invalid choice. Please select '1' or '2'.")
+        return
+    
     rclpy.init()
 
     app = QApplication(sys.argv)
@@ -219,7 +228,7 @@ def main() -> None:
         "gripper",
     ]
     
-    ros_arm_position_publisher_node = RosArmPositionsPublisher(joint_names)
+    ros_arm_position_publisher_node = RosArmPositionsPublisher(joint_names, arm_name)
     
     executor = SingleThreadedExecutor()
     executor.add_node(ros_arm_position_publisher_node)

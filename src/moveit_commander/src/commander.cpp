@@ -57,7 +57,7 @@ public:
         q = q.normalize();
 
         geometry_msgs::msg::PoseStamped target_pose;
-        target_pose.header.frame_id = "base_link";
+        target_pose.header.frame_id = "follower_base_link";
         target_pose.pose.position.x = x;
         target_pose.pose.position.y = y;
         target_pose.pose.position.z = z;
@@ -156,7 +156,7 @@ private:
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<rclcpp::Node>("commander");
+    auto node = std::make_shared<rclcpp::Node>("commander", "follower");
     auto commander = Commander(node);
     rclcpp::spin(node);
     rclcpp::shutdown();

@@ -83,7 +83,7 @@ def generate_launch_description() -> LaunchDescription:
         output='screen',
     )
 
-    # Physical placement: attach each arm's base_link to table_link.
+    # Physical placement: attach each arm's base_link to world.
     # Follower is on the RIGHT (+Y) from the operator's view.
     # Leader is on the LEFT (-Y), 0.5 m from follower.
     static_tf_follower = Node(
@@ -91,14 +91,14 @@ def generate_launch_description() -> LaunchDescription:
         executable='static_transform_publisher',
         name='static_tf_follower_base',
         # args: x  y     z     yaw pitch roll  parent        child
-        arguments=['-0.25', '0.4', '0.47', '0', '0', '0', 'table_link', 'follower_world'],
+        arguments=['-0.25', '0.4', '0.47', '0', '0', '0', 'world', 'follower_base_link'],
     )
 
     static_tf_leader = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_tf_leader_base',
-        arguments=['0.25', '0.4', '0.47', '0', '0', '0', 'table_link', 'leader_world'],
+        arguments=['0.25', '0.4', '0.47', '0', '0', '0', 'world', 'leader_base_link'],
     )
 
     #####################

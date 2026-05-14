@@ -34,7 +34,7 @@ def generate_launch_description():
     #####################
     
     # Move Group Node
-    moveit_config = MoveItConfigsBuilder("name", package_name=pkg_moveit_name).to_moveit_configs()
+    moveit_config = MoveItConfigsBuilder("so101_arm", package_name=pkg_moveit_name).to_moveit_configs()
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
@@ -42,9 +42,10 @@ def generate_launch_description():
         output="screen",
         parameters=[
             moveit_config.to_dict(),
-            {"trajectory_execution.allowed_execution_duration_scaling": 2.0,},
+            {"trajectory_execution.allowed_execution_duration_scaling": 2.0},
             {"publish_robot_description_semantic": True},
             {"use_sim_time": use_sim_time},
+            {"default_planning_pipeline": "ompl"},
         ],
         emulate_tty=True,
     )
@@ -53,7 +54,6 @@ def generate_launch_description():
     rviz_moveit_node = Node(
         package="rviz2",
         executable="rviz2",
-        namespace="follower",
         name="rviz2",
         output="screen",
         arguments=[

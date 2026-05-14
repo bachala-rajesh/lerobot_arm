@@ -50,6 +50,7 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen',
             emulate_tty=True,
+            namespace='follower',
         ),
         Node(
             package='controller_manager',
@@ -59,6 +60,7 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen',
             emulate_tty=True,
+            namespace='follower',
         ),
     ]
 

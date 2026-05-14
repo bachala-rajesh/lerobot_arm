@@ -1,10 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- Per-arm entry point for namespaced launches.
-     Load this once per arm under its own ROS namespace.
-     The launch file handles:
-       - frame_prefix (so TF frames become follower/base_link, leader/base_link, etc.)
-       - static transform from table_link to <ns>/base_link (physical placement)
-     Joint names stay plain (shoulder_pan, shoulder_lift, ...) — no prefix needed. -->
+
 <robot name="so101_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:arg name="sim_mode"                default="real_robot" />
@@ -34,26 +29,13 @@
 
     </xacro:if>
 
-    <!-- World anchor.
-         Gazebo requires this link to be literally named "world" to anchor the model.
-         For real hardware / MoveIt, use the prefixed name so both arms' TF chains
-         are unique in the global tree without frame_prefix. -->
-    <xacro:if value="${'$(arg sim_mode)' == 'gazebo'}">
-        <link name="world"/>
-        <joint name="world_joint" type="fixed">
-            <parent link="world"/>
-            <child link="$(arg arm_prefix)_base_link"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </joint>
-    </xacro:if>
-    <xacro:unless value="${'$(arg sim_mode)' == 'gazebo'}">
-        <link name="$(arg arm_prefix)_world"/>
-        <joint name="world_joint" type="fixed">
-            <parent link="$(arg arm_prefix)_world"/>
-            <child link="$(arg arm_prefix)_base_link"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </joint>
-    </xacro:unless>
+    <!-- World anchor — shared root for all arms in the scene. -->
+    <link name="world"/>
+    <joint name="world_joint" type="fixed">
+        <parent link="world"/>
+        <child link="$(arg arm_prefix)_base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
 
     <!-- Robot links and joints (base_link → jaw_link) -->
     <xacro:include filename="$(find so101_description)/urdf/robots/so101_arm.urdf.xacro" />

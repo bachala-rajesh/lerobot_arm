@@ -69,7 +69,7 @@ def generate_launch_description() -> LaunchDescription:
         output='screen',
     )
 
-    # Physical placement: attach each arm's base_link to table_link.
+    # Physical placement: attach each arm's base_link to world.
     # Follower is on the LEFT (+Y) from the operator's view.
     # Leader is on the RIGHT (-Y), 0.5 m from follower.
     static_tf_follower = Node(
@@ -77,15 +77,9 @@ def generate_launch_description() -> LaunchDescription:
         executable='static_transform_publisher',
         name='static_tf_follower_base',
         # args: x  y     z     yaw pitch roll  parent        child
-        arguments=['0', '0.25', '0.47', '0', '0', '0', 'table_link', 'follower_world'],
+        arguments=['0', '0.25', '0.47', '0', '0', '0', 'world', 'follower_base_link'],
     )
 
-    static_tf_leader = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_leader_base',
-        arguments=['0', '-0.25', '0.47', '0', '0', '0', 'table_link', 'leader/base_link'],
-    )
 
     #####################
     # Follower arm description  (/follower/ namespace)
@@ -107,26 +101,7 @@ def generate_launch_description() -> LaunchDescription:
         ),
     ])
 
-    #####################
-    # Leader arm description  (/leader/ namespace)
-    #####################
-    leader_description_group = GroupAction([
-        PushRosNamespace('leader'),
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            parameters=[{
-                'robot_description': ParameterValue(leader_description, value_type=str),
-                'frame_prefix': 'leader/',
-                'use_sim_time': use_sim_time,
-            }],
-            remappings=[
-                ('tf', '/tf'),
-                ('tf_static', '/tf_static'),
-            ],
-            output='screen',
-        ),
-    ])
+
 
     #####################
     # LaunchDescription

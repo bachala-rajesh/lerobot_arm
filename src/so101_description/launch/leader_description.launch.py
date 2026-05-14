@@ -66,12 +66,12 @@ def generate_launch_description() -> LaunchDescription:
         output='screen',
     )
 
-    # Physical placement: attach each arm's base_link to table_link
+    # Physical placement: attach each arm's base_link to world
     static_tf_leader = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_tf_leader_base',
-        arguments=['0', '-0.25', '0.47', '0', '0', '0', 'table_link', 'leader_world'],
+        arguments=['0', '-0.25', '0.47', '0', '0', '0', 'world', 'leader_base_link'],
     )
 
 

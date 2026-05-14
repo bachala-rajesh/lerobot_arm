@@ -13,4 +13,12 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        Node(
+            package="moveit_commander",
+            executable="commander",
+            name="commander",
+            namespace="follower",
+            output="screen",
+            parameters=[config],
+        ),
     ])
