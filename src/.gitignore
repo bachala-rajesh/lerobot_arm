@@ -1,1 +1,4 @@
 ./so101_bringup/config/calibration_data_backup
+
+# Motion recordings
+./motion_recordings/*

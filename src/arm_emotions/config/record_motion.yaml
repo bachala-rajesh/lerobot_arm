@@ -1,0 +1,24 @@
+/**:
+  ros__parameters:
+    parent_frame: "follower_base_link"
+    child_frame: "follower_gripper_link"
+    record_frequency: 50
+
+    emotions:
+      - "happy"
+      - "sad"
+      - "angry"
+      - "fearful"
+      - "surprised"
+      - "neutral"
+      - "curious"
+      - "excited"
+      - "tired"
+      - "stressed"
+      - "relaxed"
+
+
+    
+    
+    motion_dir: "motion_recordings"
+    num_joints: 6
