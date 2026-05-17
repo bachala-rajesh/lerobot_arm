@@ -27,8 +27,8 @@ endif()
 ament_python_install_package(${PROJECT_NAME})
 
 # Install Python executables (ROS nodes)
-install(PROGRAMS
-  arm_emotions/layer_0/record_motion.py
+file(GLOB LAYER_0_SCRIPTS arm_emotions/layer_0/*.py)
+install(PROGRAMS ${LAYER_0_SCRIPTS}
   DESTINATION lib/${PROJECT_NAME}
 )
 

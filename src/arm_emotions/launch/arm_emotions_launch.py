@@ -19,6 +19,7 @@ def generate_launch_description():
         parameters=[record_motion_config],
         output="screen",
         namespace="/follower",
+        # prefix="gnome-terminal --wait --", 
         emulate_tty=True,
     )
 
