@@ -1,7 +1,7 @@
 /**:
   ros__parameters:
-    parent_frame: "follower_base_link"
-    child_frame: "follower_gripper_link"
+    parent_frame: "leader_base_link"
+    child_frame: "leader_gripper_link"
     record_frequency: 50
 
     emotions:
@@ -16,9 +16,11 @@
       - "tired"
       - "stressed"
       - "relaxed"
+      - "initial"
 
 
     
     
     motion_dir: "motion_recordings"
     num_joints: 6
+    record_frequency: 50
