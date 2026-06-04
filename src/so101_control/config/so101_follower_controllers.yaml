@@ -15,6 +15,11 @@
     gripper_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
+    # Real-time streaming controller used by MoveIt Servo. Covers the
+    # `arm` planning group (5 joints, no gripper).
+    servo_arm_controller:
+      type: position_controllers/JointGroupPositionController
+
 /follower/joints_position_controller:
   ros__parameters:
     joints:
@@ -52,3 +57,12 @@
       - velocity
     action_ns: follow_joint_trajectory
     allow_nonzero_velocity_at_trajectory_end: false
+
+/follower/servo_arm_controller:
+  ros__parameters:
+    joints:
+      - shoulder_pan
+      - shoulder_lift
+      - elbow_flex
+      - wrist_flex
+      - wrist_roll

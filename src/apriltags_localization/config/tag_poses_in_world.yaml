@@ -1,0 +1,14 @@
+# Known tag poses in world frame.
+# tags: { tag_frame_name: [x, y, z, roll, pitch, yaw] }   (meters, radians)
+#
+# Tag frame names must match what apriltag_node publishes,
+# e.g. "tag36h11:1" for tag id 1 in family 36h11.
+
+world_frame: "world"
+camera_frame: "oak-d-base-frame"
+camera_optical_frame: "oak_rgb_camera_optical_frame"
+update_rate: 10.0
+
+tags:
+  "tag36h11:1": [0.30, 0.00, 0.00, 0.0, 0.0, 0.0]
+  # "tag36h11:2": [0.40, 0.10, 0.00, 0.0, 0.0, 0.0]

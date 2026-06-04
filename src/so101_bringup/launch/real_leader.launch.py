@@ -42,7 +42,7 @@ def generate_launch_description() -> LaunchDescription:
     leader_command = LaunchConfiguration("leader_command", default="false")
 
     #####################
-    # Description (scene + both arm RSPs + static TFs)
+    # Description (scene + both arm + static TFs)
     #####################
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
