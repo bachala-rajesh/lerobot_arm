@@ -1,0 +1,18 @@
+digraph G {
+"oak_rgb_camera_optical_frame" -> "tag36h11:1"[label=" Broadcaster: default_authority\nAverage rate: 30.197\nBuffer length: 5.067\nMost recent transform: 1780563753.1138\nOldest transform: 1780563748.047134\n"];
+"oak_rgb_camera_frame" -> "oak_rgb_camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_rgb_camera_optical_frame" -> "tag36h11:2"[label=" Broadcaster: default_authority\nAverage rate: 30.197\nBuffer length: 5.067\nMost recent transform: 1780563753.1138\nOldest transform: 1780563748.047134\n"];
+"oak-d-base-frame" -> "oak-d_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "oak-d-base-frame"[label=" Broadcaster: default_authority\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 1780563753.142303\nOldest transform: 1780563748.24238\n"];
+"oak-d_frame" -> "oak_imu_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_left_camera_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_left_camera_frame" -> "oak_left_camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_model_origin"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_rgb_camera_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_right_camera_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_right_camera_frame" -> "oak_right_camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1780563753.2056003"[ shape=plaintext ] ;
+}->"world";
+}

@@ -1,0 +1,30 @@
+# Request
+# ----------------------------------------------------------------------
+# Free-text description of what to find in the scene.
+# Example: "red cube, blue block"
+string prompt
+---
+# Response
+# ----------------------------------------------------------------------
+# success: true if the VLM call returned a parseable result
+bool success
+
+# Short scene description from the VLM (3-5 sentences)
+string description
+
+# One label per detection. Length = N (number of detections).
+string[] labels
+
+# Flat bounding boxes in pixels, length = 4 * N.
+# Order per detection: [x1, y1, x2, y2, x1, y1, x2, y2, ...]
+# (x1, y1) = top-left, (x2, y2) = bottom-right.
+int32[] bboxes_xyxy
+
+# Size of the frame the bboxes refer to (matches the latest camera frame
+# the VLM analysed). Use these to scale bboxes back to other resolutions.
+int32 image_width
+int32 image_height
+
+# ROS time the camera frame was captured. Useful for TF lookups
+# (camera_optical_frame -> world) at the right timestamp.
+builtin_interfaces/Time stamp

@@ -3,6 +3,7 @@
   ros__parameters:
     camera:
       i_pipeline_type: RGBD          # RGB + Left + Right only 
+      i_usb_speed: SUPER 
       i_nn_type: none                     # no on-device NN
       i_enable_ir: false                  # no IR
       i_rs_compat: false                  # True enables to publish topics like real sense camera
@@ -68,4 +69,4 @@
 
 
     # ---------- Turn the rest completely off --------------------------------
-    tof.i_publish_topic: false           # no depth
+    tof.i_publish_topic: true           # no depth

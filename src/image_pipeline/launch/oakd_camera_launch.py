@@ -56,9 +56,6 @@ def generate_launch_description():
                     oak_config_yaml,
                     {"use_sim_time": use_sim_time},
                 ],
-                remappings=[
-                    ("/oak/imu/data", "/imu/data"),
-                ],
             )
         ],
         output="screen",

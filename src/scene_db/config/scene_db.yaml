@@ -1,0 +1,10 @@
+# scene_db configuration.
+#
+# The library currently reads only the SCENE_DB_PATH environment variable.
+# Set it in your shell or in a launch file:
+#
+#   export SCENE_DB_PATH=/home/mira/.ros/scene_db/scene.db
+#
+# This YAML is reserved for future parameters (retention policy, dedup,
+# pruning interval, etc.) once a daemon node is added.
+db_path: "~/.ros/scene_db/scene.db"

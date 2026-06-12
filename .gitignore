@@ -13,3 +13,4 @@ TODO
 src/test_pkg/
 CLAUDE.md
 AGENTS.md
+./claude/*

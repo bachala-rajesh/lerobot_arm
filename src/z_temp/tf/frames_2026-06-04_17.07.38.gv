@@ -1,0 +1,25 @@
+digraph G {
+"world" -> "follower_base_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d-base-frame" -> "oak-d_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "oak-d-base-frame"[label=" Broadcaster: default_authority\nAverage rate: 10.208\nBuffer length: 4.8\nMost recent transform: 44.2\nOldest transform: 39.4\n"];
+"oak-d_frame" -> "oak_imu_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_left_camera_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_left_camera_frame" -> "oak_left_camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_model_origin"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_rgb_camera_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_rgb_camera_frame" -> "oak_rgb_camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak-d_frame" -> "oak_right_camera_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_right_camera_frame" -> "oak_right_camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "table_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"oak_rgb_camera_optical_frame" -> "tag36h11:2"[label=" Broadcaster: default_authority\nAverage rate: 29.335\nBuffer length: 5.045\nMost recent transform: 1780564058.67194\nOldest transform: 1780564053.626796\n"];
+"follower_upper_arm_link" -> "follower_lower_arm_link"[label=" Broadcaster: default_authority\nAverage rate: 20.204\nBuffer length: 4.9\nMost recent transform: 44.25\nOldest transform: 39.35\n"];
+"follower_shoulder_link" -> "follower_upper_arm_link"[label=" Broadcaster: default_authority\nAverage rate: 20.204\nBuffer length: 4.9\nMost recent transform: 44.25\nOldest transform: 39.35\n"];
+"follower_gripper_link" -> "follower_jaw_link"[label=" Broadcaster: default_authority\nAverage rate: 20.204\nBuffer length: 4.9\nMost recent transform: 44.25\nOldest transform: 39.35\n"];
+"follower_wrist_link" -> "follower_gripper_link"[label=" Broadcaster: default_authority\nAverage rate: 20.204\nBuffer length: 4.9\nMost recent transform: 44.25\nOldest transform: 39.35\n"];
+"follower_base_link" -> "follower_shoulder_link"[label=" Broadcaster: default_authority\nAverage rate: 20.204\nBuffer length: 4.9\nMost recent transform: 44.25\nOldest transform: 39.35\n"];
+"follower_lower_arm_link" -> "follower_wrist_link"[label=" Broadcaster: default_authority\nAverage rate: 20.204\nBuffer length: 4.9\nMost recent transform: 44.25\nOldest transform: 39.35\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1780564058.9396467"[ shape=plaintext ] ;
+}->"world";
+}

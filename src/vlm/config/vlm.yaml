@@ -1,0 +1,26 @@
+# vlm_node parameters.
+# Node name must match the one in launch/vlm.launch.py.
+vlm_node:
+  ros__parameters:
+
+    # Service name the node exposes.
+    service_name: "/vlm/detect_objects"
+
+    # Resize image before sending to VLM. [width, height].
+    # Use [] to send the original camera resolution.
+    resize: [640, 480]
+
+    # DashScope API key. Leave empty to fall back to the
+    # DASHSCOPE_API_KEY environment variable (recommended).
+    api_key: "DASHSCOPE_API_KEY"
+
+    # Persist every detection to scene_db (SQLite). Localizer will
+    # later fill in world_x/y/z.
+    write_to_db: true
+
+    # Tag rows with this string so we know which detector produced them.
+    detector_name: "vlm"
+
+    # TF frame the bbox pixels are in (camera optical frame). The
+    # localizer uses this to transform 3D points into the world frame.
+    source_frame: "oak_rgb_camera_optical_frame"
