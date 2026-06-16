@@ -1,20 +1,16 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>so101_bringup</name>
+  <name>llm_voice</name>
   <version>0.0.0</version>
-  <description>package for bringup of so101 robot arm</description>
-  <maintainer email="todo@todo.todo">mira</maintainer>
+  <description>scripts for voice assitant using pipecat and langraph</description>
+  <maintainer email="bachala_rajesh@outlook.com">Bachala Rajesh</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>trajectory_msgs</exec_depend>
-  <exec_depend>builtin_interfaces</exec_depend>
-  <exec_depend>moveit_configs_utils</exec_depend>
+  <exec_depend>scene_db</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

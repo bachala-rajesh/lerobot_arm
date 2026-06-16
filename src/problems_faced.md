@@ -9,4 +9,6 @@
                 - solved by creating a ros2 node that takes the data of all the april tags and then publishes tf frame between world and camera.
             b. 
         4. pipecat version mismatch - tested in python 3.11 and deployed in python 3.10
+            a. the async feature of stream is problematic.
+            
         

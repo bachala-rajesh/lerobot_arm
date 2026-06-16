@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(vlm)
+project(llm_voice)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -26,27 +26,16 @@ endif()
 # Install Python modules
 ament_python_install_package(${PROJECT_NAME})
 
-
-
-# Add Python node vlm_node
-install(PROGRAMS
-  ${PROJECT_NAME}/vlm_node.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME vlm_node
-)
-
 # Test client
 install(PROGRAMS
-  ${PROJECT_NAME}/test_client.py
-  DESTINATION lib/${PROJECT_NAME}
-)
+  ${PROJECT_NAME}/v1_test_langchain.py
+  ${PROJECT_NAME}/v2_test_langchain_scene_db.py
+  ${PROJECT_NAME}/v3_test_langchain_pipecat_scene_db_tools.py
+  ${PROJECT_NAME}/v4_test_langchain_pipecat.py
+  ${PROJECT_NAME}/v5_pipecat_langgraph.py
+  ${PROJECT_NAME}/v6_pipecat_langgraph.py
 
-# Install config + launch directories so launch files can find them
-# via get_package_share_directory("vlm").
-install(DIRECTORY
-  config
-  launch
-  DESTINATION share/${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()

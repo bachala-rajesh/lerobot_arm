@@ -17,9 +17,9 @@ endif()
 ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
-  ${PROJECT_NAME}/localizer_node.py
+  ${PROJECT_NAME}/v1_localizer_node.py
+  ${PROJECT_NAME}/localizer_practice.py
   DESTINATION lib/${PROJECT_NAME}
-  RENAME localizer_node
 )
 
 install(DIRECTORY

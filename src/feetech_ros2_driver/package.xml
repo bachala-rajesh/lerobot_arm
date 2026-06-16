@@ -22,6 +22,8 @@
   <depend>pkg-config</depend>
   <depend>yaml-cpp</depend>
   <depend>libserial-dev</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>lifecycle_msgs</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
