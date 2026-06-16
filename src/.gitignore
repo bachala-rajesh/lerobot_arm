@@ -3,3 +3,4 @@
 # Motion recordings
 ./motion_recordings/*
 ./z_plans/*
+./deep_learning_models/*

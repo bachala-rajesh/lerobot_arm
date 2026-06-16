@@ -14,3 +14,5 @@ src/test_pkg/
 CLAUDE.md
 AGENTS.md
 ./claude/*
+
+.git-filter-repo-venv/
