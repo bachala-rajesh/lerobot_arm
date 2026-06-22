@@ -22,6 +22,7 @@ find_package(rosidl_default_generators REQUIRED)
   "msg/Audio.msg"
   "msg/AudioStamped.msg"
   "action/TTS.action"
+  "action/SegmentObject.action"
   "srv/MusicPlay.srv"
   "srv/DetectObjects.srv"
   DEPENDENCIES std_msgs

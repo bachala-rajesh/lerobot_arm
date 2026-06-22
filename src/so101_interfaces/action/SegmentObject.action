@@ -1,0 +1,38 @@
+# Goal
+# ------------------------------------------------------------------
+# Bounding box in pixel space: [x1, y1, x2, y2]
+int32[] bbox_xyxy
+
+# Object label — used for logging / debug only
+string label
+
+# track=false  → single-shot mask, then done
+# track=true   → run image predictor on every new frame, publish feedback
+#                until the client cancels the goal
+bool track
+
+---
+# Result
+# ------------------------------------------------------------------
+bool success
+string message
+
+# Flattened binary mask (bool → uint8 0/1), row-major, size = H*W
+uint8[] mask_flat
+int32 mask_height
+int32 mask_width
+
+# Pixel centroid of the mask
+float32 centroid_u
+float32 centroid_v
+
+# SAM2 confidence score
+float32 score
+
+---
+# Feedback  (only published when track=true)
+# ------------------------------------------------------------------
+float32 centroid_u
+float32 centroid_v
+float32 score
+int32 frame_count
