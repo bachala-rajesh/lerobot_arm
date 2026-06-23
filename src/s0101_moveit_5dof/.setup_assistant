@@ -2,12 +2,13 @@ moveit_setup_assistant_config:
   urdf:
     package: so101_description
     relative_path: urdf/so101_arm_with_control.urdf.xacro
+    xacro_args: " moveit_status:=true dof_type:=dof_5"
   srdf:
     relative_path: config/so101_arm.srdf
   package_settings:
     author_name: Bachala Rajesh
     author_email: bachala_rajesh@outlook.com
-    generated_timestamp: 1778729194
+    generated_timestamp: 1782187920
   control_xacro:
     command:
       - position

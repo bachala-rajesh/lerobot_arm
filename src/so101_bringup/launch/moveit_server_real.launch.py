@@ -19,7 +19,7 @@ def generate_launch_description():
     #####################
     # package paths
     #####################
-    pkg_moveit_name = "so101_moveit_config"
+    pkg_moveit_name = "s0101_moveit_5dof"
     pkg_bringup = get_package_share_directory("so101_bringup")
     pkg_moveit = get_package_share_directory(pkg_moveit_name)
     

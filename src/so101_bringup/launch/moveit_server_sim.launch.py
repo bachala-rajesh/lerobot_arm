@@ -12,33 +12,29 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
-
-
 def generate_launch_description():
-    
+
     #####################
     # package paths
     #####################
-    pkg_moveit_name = "so101_moveit_config"
+    pkg_moveit_name = "s0101_moveit_5dof"
     pkg_bringup = get_package_share_directory("so101_bringup")
     pkg_moveit = get_package_share_directory(pkg_moveit_name)
-    
-    ##################### 
-    # launch arguments and configurations related 
+
+    #####################
+    # launch arguments and configurations related
     #####################
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
-    
-    
+
     #####################
     # nodes
     #####################
-    
-    # Move Group Node
-    moveit_config = MoveItConfigsBuilder("so101_arm", package_name=pkg_moveit_name).to_moveit_configs()
-    
 
-        
-    
+    # Move Group Node
+    moveit_config = MoveItConfigsBuilder(
+        "so101_arm", package_name=pkg_moveit_name
+    ).to_moveit_configs()
+
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
@@ -63,20 +59,10 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="screen",
-        arguments=[
-                    "-d", rviz_config,
-                    "--ros-args", "--log-level", "WARN"
-                   ],
-        parameters=[
-            moveit_config.to_dict(),
-            {"use_sim_time": use_sim_time}
-        ],
-        
+        arguments=["-d", rviz_config, "--ros-args", "--log-level", "WARN"],
+        parameters=[moveit_config.to_dict(), {"use_sim_time": use_sim_time}],
         emulate_tty=True,
     )
-
-    
-    
 
     return LaunchDescription(
         [
@@ -85,7 +71,6 @@ def generate_launch_description():
                 default_value="true",
                 description="Use simulation (Gazebo) clock if true",
             ),
-            
             move_group_node,
             rviz_moveit_node,
         ]

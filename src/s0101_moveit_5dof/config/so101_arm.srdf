@@ -9,17 +9,11 @@
     <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
-    <group name="arm">
-        <joint name="virtual_joint"/>
-        <joint name="world_joint"/>
-        <joint name="shoulder_pan"/>
-        <joint name="shoulder_lift"/>
-        <joint name="elbow_flex"/>
-        <joint name="wrist_flex"/>
-        <joint name="wrist_roll"/>
-    </group>
     <group name="gripper">
         <joint name="gripper"/>
+    </group>
+    <group name="arm">
+        <chain base_link="follower_base_link" tip_link="follower_gripper_link"/>
     </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="HOME" group="arm">
@@ -30,32 +24,30 @@
         <joint name="wrist_roll" value="0"/>
     </group_state>
     <group_state name="UP" group="arm">
-        <joint name="elbow_flex" value="-1.4142"/>
+        <joint name="elbow_flex" value="-1.5611"/>
         <joint name="shoulder_lift" value="0"/>
         <joint name="shoulder_pan" value="0"/>
         <joint name="wrist_flex" value="0"/>
         <joint name="wrist_roll" value="0"/>
     </group_state>
     <group_state name="RANDOM" group="arm">
-        <joint name="elbow_flex" value="0.5333"/>
-        <joint name="shoulder_lift" value="-0.4933"/>
-        <joint name="shoulder_pan" value="0.9384"/>
-        <joint name="wrist_flex" value="-0.9913"/>
-        <joint name="wrist_roll" value="1.7226"/>
+        <joint name="elbow_flex" value="-0.1097"/>
+        <joint name="shoulder_lift" value="-0.6278"/>
+        <joint name="shoulder_pan" value="-1.4609"/>
+        <joint name="wrist_flex" value="1.3927"/>
+        <joint name="wrist_roll" value="1.4788"/>
     </group_state>
     <group_state name="CLOSE" group="gripper">
         <joint name="gripper" value="0"/>
     </group_state>
-    <group_state name="OPEN" group="gripper">
-        <joint name="gripper" value="1.1267"/>
+    <group_state name="OPEN_FULL" group="gripper">
+        <joint name="gripper" value="1.3187"/>
     </group_state>
     <group_state name="OPEN_HALF" group="gripper">
-        <joint name="gripper" value="0.7001"/>
+        <joint name="gripper" value="0.7854"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="hand" parent_link="follower_wrist_link" group="gripper"/>
-    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
-    <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="follower_base_link"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="follower_base_link" link2="follower_shoulder_link" reason="Adjacent"/>
     <disable_collisions link1="follower_gripper_link" link2="follower_jaw_link" reason="Adjacent"/>
