@@ -8,7 +8,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     # get path of config file
     oak_config_yaml = PathJoinSubstitution(
-        [FindPackageShare("image_pipeline"), "config", "test_oakd_camera_params.yaml"]
+        [FindPackageShare("oakd_camera"), "config", "test_oakd_camera_params.yaml"]
     )
 
     container = ComposableNodeContainer(

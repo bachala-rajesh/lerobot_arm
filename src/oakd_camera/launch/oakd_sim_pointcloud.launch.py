@@ -16,12 +16,22 @@ TF (in follower_gazebo.launch.py) connects that frame to the TF tree.
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import ComposableNodeContainer
+from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description() -> LaunchDescription:
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
+
+    # gz publishes a wrong P matrix in camera_info -> fix it (P = [K|0]).
+    # depth_image_proc then reads /oak/stereo/camera_info_fixed.
+    camera_info_fixer = Node(
+        package="oakd_camera",
+        executable="fix_camera_info.py",
+        name="camera_info_fixer",
+        output="screen",
+        parameters=[{"use_sim_time": use_sim_time}],
+    )
 
     container = ComposableNodeContainer(
         name="oak_pointcloud_container",
@@ -35,8 +45,8 @@ def generate_launch_description() -> LaunchDescription:
                 name="oak_pointcloud_xyz",
                 parameters=[{"use_sim_time": use_sim_time}],
                 remappings=[
-                    ("image_rect", "/oak/stereo/image_raw"),   # 32FC1 depth (m)
-                    ("camera_info", "/oak/stereo/camera_info"),
+                    ("image_rect", "/oak/stereo/image_raw"),         # 32FC1 depth (m)
+                    ("camera_info", "/oak/stereo/camera_info_fixed"), # fixed P matrix
                     ("points", "/oak/points"),
                 ],
             ),
@@ -52,6 +62,7 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="true",
                 description="Use Gazebo simulation clock",
             ),
+            camera_info_fixer,
             container,
         ]
     )

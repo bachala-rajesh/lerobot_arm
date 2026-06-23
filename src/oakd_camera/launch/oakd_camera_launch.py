@@ -39,7 +39,7 @@ def generate_launch_description():
 
     # ----- OAK-D driver (RGB / depth / IMU streams) -----
     oak_config_yaml = PathJoinSubstitution(
-        [FindPackageShare("image_pipeline"), "config", "oakd_camera_params.yaml"]
+        [FindPackageShare("oakd_camera"), "config", "oakd_camera_params.yaml"]
     )
 
     container = ComposableNodeContainer(

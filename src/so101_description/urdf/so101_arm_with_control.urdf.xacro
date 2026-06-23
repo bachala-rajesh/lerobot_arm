@@ -30,12 +30,34 @@
 
     </xacro:if>
 
+    <!-- ============ ARM WORLD PLACEMENT — SINGLE SOURCE OF TRUTH ============
+         world_joint = where the arm base sits in the world.
+         Chosen automatically by sim_mode (and dof_type for the yaw).
+           - gazebo : arm sits on the table (0, 0.40, 0.97). dof_6 mesh needs -90 deg yaw.
+           - else   : world origin (0,0,0) -> REAL ROBOT SAFE default.-->
+    <xacro:property name="sim_mode_val" value="$(arg sim_mode)"/>
+    <xacro:property name="dof_val"      value="$(arg dof_type)"/>
+
+    <xacro:if value="${sim_mode_val == 'gazebo'}">
+        <xacro:property name="base_xyz" value="0 0.40 0.97"/>
+        <xacro:if value="${dof_val == 'dof_6'}">
+            <xacro:property name="base_rpy" value="0 0 -1.5708"/>
+        </xacro:if>
+        <xacro:unless value="${dof_val == 'dof_6'}">
+            <xacro:property name="base_rpy" value="0 0 0"/>
+        </xacro:unless>
+    </xacro:if>
+    <xacro:unless value="${sim_mode_val == 'gazebo'}">
+        <xacro:property name="base_xyz" value="0 0 0"/>
+        <xacro:property name="base_rpy" value="0 0 0"/>
+    </xacro:unless>
+
     <!-- World anchor — shared root for all arms in the scene. -->
     <link name="world"/>
     <joint name="world_joint" type="fixed">
         <parent link="world"/>
         <child link="$(arg arm_prefix)_base_link"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="${base_xyz}" rpy="${base_rpy}"/>
     </joint>
 
     <!-- Robot links and joints (base_link → jaw_link) -->

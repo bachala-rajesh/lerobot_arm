@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(image_pipeline)
+project(oakd_camera)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -31,6 +31,12 @@ install(
     rviz
     urdf
   DESTINATION share/${PROJECT_NAME}
+  )
+
+# Python node scripts (executable, invoked by name in launch).
+install(PROGRAMS
+  scripts/fix_camera_info.py
+  DESTINATION lib/${PROJECT_NAME}
   )
 
 ament_package()

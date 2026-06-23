@@ -36,7 +36,7 @@ def generate_launch_description() -> LaunchDescription:
     dof_type = LaunchConfiguration("dof_type", default="dof_5")
     use_camera = LaunchConfiguration("use_camera", default="true")
 
-    pkg_image_pipeline = get_package_share_directory("image_pipeline")
+    pkg_oakd_camera = get_package_share_directory("oakd_camera")
 
     # OAK-D camera mount pose (world -> camera). This is the SINGLE place to set
     # where the sim camera sits. Edit here, or override on the CLI, e.g.
@@ -104,21 +104,15 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
     )
 
-    # 6DOF arm meshes have a different base-frame orientation than 5DOF — rotated 90 deg to the left.
-    # Counter-rotate by -1.5708 rad on spawn to align it the same way as the 5DOF arm.
-    spawn_yaw = PythonExpression(["'-1.5708' if '", dof_type, "' == 'dof_6' else '0.0'"])
-
-    # Spawn follower arm — reads from /follower/robot_description.
-    # Position in Gazebo world = table_link position (z=0.5) + static TF offset (y=0.25, z=0.47).
+    # Spawn follower arm at the WORLD ORIGIN (no -x -y -z -Y).
+    # The arm's world placement (on the table, incl. the dof_6 -90 deg yaw) comes
+    # from the URDF world_joint, which is built with sim_mode:=gazebo. This keeps
+    # ONE source of truth: gz body, RViz/TF and MoveIt all read that same number.
     spawn_robot_node = Node(
         package="ros_gz_sim",
         executable="create",
         arguments=["-topic", "/follower/robot_description",
                    "-name", "follower",
-                   "-x", "0.0",
-                   "-y", "0.40",
-                   "-z", "0.97",
-                   "-Y", spawn_yaw,
                    ],
         parameters=[{"use_sim_time": use_sim_time}],
         emulate_tty=True,
@@ -127,11 +121,11 @@ def generate_launch_description() -> LaunchDescription:
     
     
 
-    # OAK-D camera (sim). RSP (description + TF) from image_pipeline, spawn here.
+    # OAK-D camera (sim). RSP (description + TF) from oakd_camera, spawn here.
     # Gated by use_camera (default true). Pose is baked into /oak/robot_description.
     oak_camera_rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_image_pipeline, "launch", "oakd_camera_rsp.launch.py")
+            os.path.join(pkg_oakd_camera, "launch", "oakd_camera_rsp.launch.py")
         ),
         launch_arguments={"use_sim_time": use_sim_time, **cam_pose}.items(),
         condition=IfCondition(use_camera),
@@ -148,10 +142,10 @@ def generate_launch_description() -> LaunchDescription:
     )
 
     # Build /oak/points in ROS from the depth image (faster than bridging the
-    # gz cloud). image_pipeline owns this processing.
+    # gz cloud). oakd_camera owns this processing.
     oak_pointcloud = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_image_pipeline, "launch", "oakd_sim_pointcloud.launch.py")
+            os.path.join(pkg_oakd_camera, "launch", "oakd_sim_pointcloud.launch.py")
         ),
         launch_arguments={"use_sim_time": use_sim_time}.items(),
         condition=IfCondition(use_camera),

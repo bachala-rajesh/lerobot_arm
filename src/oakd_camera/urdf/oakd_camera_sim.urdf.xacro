@@ -100,6 +100,20 @@
           <near>0.2</near>
           <far>4.0</far>
         </clip>
+        <!-- Force correct intrinsics so camera_info MATCHES the 640x480 image.
+             gz Ignition rgbd_camera otherwise publishes a default 320x240 K
+             (cx=160,cy=120) -> wrong deprojection -> shifted cloud.
+             fx = fy = width / (2*tan(hfov/2)) = 640 / (2*tan(1.25/2)) = 441.
+             cx = width/2 = 320,  cy = height/2 = 240. -->
+        <lens>
+          <intrinsics>
+            <fx>441.0</fx>
+            <fy>441.0</fy>
+            <cx>320.0</cx>
+            <cy>240.0</cy>
+            <s>0.0</s>
+          </intrinsics>
+        </lens>
         <optical_frame_id>oak_rgb_camera_optical_frame</optical_frame_id>
       </camera>
     </sensor>

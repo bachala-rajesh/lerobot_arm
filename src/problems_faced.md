@@ -66,6 +66,65 @@
        - Build gz_ros2_control from source
        - In ign_system.cpp, change the _mimic suffix to empty string ""
        - This preserves mimic behavior AND fixes MoveIt error
+
+
+8. MoveIt octomap from sim OAK-D camera — point cloud / robot MISALIGNMENT (SIM, gz Fortress)
+
+   Goal: feed the gz OAK-D point cloud (/oak/points) into MoveIt octomap for collision avoidance.
+   Symptom: in RViz the octomap/cloud did NOT line up with the robot arm.
+   Two independent root causes were found and fixed.
+
+   --- Cause A: the arm had THREE conflicting world-pose numbers ---
+       world -> follower_base_link was set in 3 places, all different:
+         1. Gazebo spawn        : create -x 0 -y 0.40 -z 0.97 -Y -1.5708  (physical body)
+         2. URDF world_joint     : origin 0 0 0                           (used by RViz + MoveIt)
+         3. static_tf_follower_base : 0 0.25 0.47                         (a duplicate static TF)
+       => RViz/MoveIt showed the arm at the origin while the real arm (and the camera-seen
+          octomap) were on the table. Self-filter also failed.
+
+       Fix — ONE source of truth = the URDF world_joint, selected by sim_mode:
+         - so101_description/urdf/so101_arm_with_control.urdf.xacro: world_joint origin is
+           conditional: sim_mode==gazebo -> 0 0.40 0.97 (+ yaw -1.5708 for dof_6);
+           else -> 0 0 0 (REAL ROBOT SAFE default).
+         - so101_bringup/launch/follower_gazebo.launch.py: spawn the arm at the ORIGIN
+           (removed -x -y -z -Y); the pose now comes from the URDF (same trick as the camera).
+         - so101_bringup/launch/moveit_server_sim_6dof.launch.py: build with
+           .robot_description(mappings={"sim_mode":"gazebo","dof_type":"dof_6"}) so MoveIt reads
+           the same table pose. (moveit_status=true still skips the ros2_control block.)
+         - so101_description/launch/follower_description.launch.py: REMOVED
+           static_tf_follower_base — it duplicated/conflicted with the URDF world_joint in ALL
+           modes (real included). world_joint is now the single publisher of world->base.
+       Verify: gazebo arm pose, TF world->follower_base_link, and RViz model all = 0,0.40,0.97.
+
+   --- Cause B: gz publishes a WRONG camera_info -> depth cloud shifted ---
+       gz Ignition rgbd_camera published camera_info whose K and P matrices kept the DEFAULT
+       320x240 / 60deg intrinsics (fx=277, cx=160, cy=120) even though the depth image is
+       640x480 / 71deg. depth_image_proc deprojects with the wrong principal point -> the whole
+       cloud is shifted ~0.3-0.4 m. Verified: a cube at real (0,0,1.0) appeared in the cloud at
+       (0.23,0.32,0.76); the offset predicted from the wrong K matched the measurement.
+
+       Fix attempt 1 (partial): <lens><intrinsics> in the sensor SDF
+         (fx=441, cx=320, cy=240) -> fixed K, but gz LEFT P at the default (277,160,120).
+         depth_image_proc uses P (projection), NOT K -> still shifted.
+
+       Fix (final): node oakd_camera/scripts/fix_camera_info.py
+         - subscribes /oak/stereo/camera_info, sets P = [K | 0] (valid when no distortion),
+           republishes /oak/stereo/camera_info_fixed; KEEPS the original timestamp so the
+           depth image + camera_info still sync (no timing mismatch).
+         - oakd_sim_pointcloud.launch.py: runs the fixer + remaps depth_image_proc
+           camera_info -> /oak/stereo/camera_info_fixed.
+       Result: cube cloud lands on (0,0,1.0); octomap perfectly aligned with the arm.
+
+   Real robot notes:
+       - sensors_3d.yaml (PointCloudOctomapUpdater on /oak/points, octomap_frame=world) is
+         PORTABLE -> same config works on real.
+       - camera_info fixer + table pose + spawn-at-origin are SIM-ONLY (gated by sim_mode) ->
+         real robot untouched. Real depthai driver gives a correct camera_info.
+       - On real, camera pose world->camera comes from the AprilTag node -> alignment quality
+         depends on AprilTag calibration accuracy.
+       - Real depth is 16UC1 (mm) -> needs ConvertMetric before depth_image_proc
+         (already handled in oakd_camera_with_pointclouds.launch.py).
+       - Requires ros-humble-moveit-ros-perception (provides the octomap updater plugins).
         
 
         

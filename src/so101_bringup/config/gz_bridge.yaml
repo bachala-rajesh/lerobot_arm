@@ -40,7 +40,7 @@
 
 # NOTE: gz point cloud is NOT bridged (PointCloudPacked is heavy -> slow).
 # /oak/points is built in ROS from the depth image by depth_image_proc, see
-# image_pipeline/launch/oakd_sim_pointcloud.launch.py.
+# oakd_camera/launch/oakd_sim_pointcloud.launch.py.
 
 
 

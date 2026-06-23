@@ -30,7 +30,7 @@ def generate_launch_description() -> LaunchDescription:
                     arguments=[
                         "-d",
                         PathJoinSubstitution(
-                            [FindPackageShare("image_pipeline"), "rviz", "view_pointclouds_stereo.rviz"]
+                            [FindPackageShare("oakd_camera"), "rviz", "view_pointclouds_stereo.rviz"]
                         ),
                     ],
                     # parameters=[{'transform_tolerance': 1.0}],

@@ -78,14 +78,11 @@ def generate_launch_description() -> LaunchDescription:
     # Physical placement: attach each arm's base_link to world.
     # Follower is on the LEFT (+Y) from the operator's view.
     # Leader is on the RIGHT (-Y), 0.5 m from follower.
-    static_tf_follower = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_follower_base',
-        # args: x  y     z     yaw pitch roll  parent        child
-        arguments=['0', '0.25', '0.47', '0', '0', '0', 'world', 'follower_base_link'],
-    )
-
+    # NOTE: world -> follower_base_link is published by the URDF world_joint
+    # (via the arm's robot_state_publisher) in ALL modes. A separate
+    # static_transform_publisher here would DUPLICATE/conflict with it, so it was
+    # removed. If a real-robot mount offset is ever needed, set it in the URDF
+    # world_joint (single source), not a separate node.
 
     #####################
     # Follower arm description  (/follower/ namespace)
@@ -140,8 +137,7 @@ def generate_launch_description() -> LaunchDescription:
         ),
 
         scene_state_publisher,
-        static_tf_follower,
-        # static_tf_leader,
+        # static_tf_follower removed — world_joint (URDF) is the single source.
         follower_description_group,
         # leader_description_group,
     ])

@@ -1,0 +1,22 @@
+# 3D sensor config for MoveIt octomap (collision avoidance from OAK-D cloud).
+
+#
+# IMPORTANT: move_group runs under namespace /follower, so topics MUST be
+# absolute (leading "/"), else they become /follower/oak/points (wrong).
+
+sensors:
+  - oak_camera
+
+oak_camera:
+  sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+  point_cloud_topic: /oak/points          # cloud in (absolute!)
+  max_range: 3.0                           # ignore points beyond 3 m
+  point_subsample: 1                       # use every point
+  padding_offset: 0.03                     # extra self-filter margin (m)
+  padding_scale: 1.0                       # self-filter body scale
+  max_update_rate: 1.0                     # cap octomap updates (Hz)
+  filtered_cloud_topic: /oak/filtered_cloud  # debug: cloud after self-filter
+
+# Octomap (the 3D voxel map) settings:
+octomap_frame: world                       # fixed frame the octomap lives in
+octomap_resolution: 0.02                   # voxel size = 2 cm

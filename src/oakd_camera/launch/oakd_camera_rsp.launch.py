@@ -29,7 +29,7 @@ def generate_launch_description() -> LaunchDescription:
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
 
     xacro_file = PathJoinSubstitution(
-        [FindPackageShare("image_pipeline"), "urdf", "oakd_camera_sim.urdf.xacro"]
+        [FindPackageShare("oakd_camera"), "urdf", "oakd_camera_sim.urdf.xacro"]
     )
 
     # Build: xacro <file> cam_pos_x:=<val> ...  (values forwarded from caller)
