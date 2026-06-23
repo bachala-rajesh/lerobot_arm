@@ -7,8 +7,9 @@
     <xacro:arg name="usb_port"                default="/dev/lerobot_follower" />
     <xacro:arg name="real_robot_joint_config"       default="" />
     <xacro:arg name="command"                default="true" />
-    <xacro:arg name="gazebo_controllers_config" default="$(find so101_control)/config/so101_follower_controllers.yaml" />
+    <xacro:arg name="gazebo_controllers_config" default="" />
     <xacro:arg name="arm_prefix" default="follower" />
+    <xacro:arg name="dof_type"   default="dof_5" />
     <!-- Prefix for all URDF link names: "follower_" or "leader_".
          Keeps both arms' TF frames unique in the global tree. -->
 
@@ -38,6 +39,11 @@
     </joint>
 
     <!-- Robot links and joints (base_link → jaw_link) -->
-    <xacro:include filename="$(find so101_description)/urdf/robots/so101_arm.urdf.xacro" />
+    <xacro:if value="${'$(arg dof_type)' == 'dof_5'}">
+        <xacro:include filename="$(find so101_description)/urdf/robots/5dof_so101_arm.urdf.xacro" />
+    </xacro:if>
+    <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+        <xacro:include filename="$(find so101_description)/urdf/robots/6dof_so101_arm.urdf.xacro" />
+    </xacro:if>
 
 </robot>

@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
-<robot name="so101_arm">
+<robot name="so101_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+    <xacro:property name="wrist_roll_id" value="6"/>
+    <xacro:property name="gripper_id"    value="7"/>
+  </xacro:if>
+  <xacro:unless value="${'$(arg dof_type)' == 'dof_6'}">
+    <xacro:property name="wrist_roll_id" value="5"/>
+    <xacro:property name="gripper_id"    value="6"/>
+  </xacro:unless>
   <ros2_control name="so101_$(arg arm_prefix)_isaacsim" type="system">
     <hardware>
       <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
@@ -30,14 +39,22 @@
       <command_interface name="position"/>
       <state_interface name="position"/>
     </joint>
-    <joint name="wrist_roll">
+    <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+    <joint name="wrist_yaw">
       <param name="id">5</param>
       <param name="model">sts3215</param>
       <command_interface name="position"/>
       <state_interface name="position"/>
     </joint>
+    </xacro:if>
+    <joint name="wrist_roll">
+      <param name="id">${wrist_roll_id}</param>
+      <param name="model">sts3215</param>
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
     <joint name="gripper">
-      <param name="id">6</param>
+      <param name="id">${gripper_id}</param>
       <param name="model">sts3215</param>
       <command_interface name="position"/>
       <state_interface name="position"/>

@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="so101_6dof_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="arm_prefix" default="follower"/>
+  <!-- Link names are prefixed by arm_prefix (e.g. "follower_" or "leader_") so both arms can
+       share the global TF tree without collision.
+       Joint names (shoulder_pan, etc.) are NOT prefixed — ros2_control uses them plain. -->
+
+  <material name="silver">
+    <color rgba="0.700 0.700 0.700 1.000"/>
+  </material>
+
+  <!-- ==================== LINKS ==================== -->
+
+  <link name="$(arg arm_prefix)_base_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.002181917231912958 0.0002385029900090826 0.030231283959863367"/>
+      <mass value="0.19146543803266067"/>
+      <inertia ixx="0.00019" ixy="-1e-06" ixz="1.3e-05" iyy="0.000188" iyz="0.0" izz="0.000196"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/base_link.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/base_link.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_shoulder_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.031250252793449916 -0.0002581461462100498 0.008420217667021515"/>
+      <mass value="0.12340393098325005"/>
+      <inertia ixx="0.000124" ixy="-0.0" ixz="-5e-06" iyy="0.000125" iyz="1e-06" izz="3.4e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.025192 -0.000209 -0.066415"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/shoulder_link_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.025192 -0.000209 -0.066415"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/shoulder_link_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_upper_arm_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0036368866597614596 0.019750801968105986 0.07224195667057687"/>
+      <mass value="0.16051385984690403"/>
+      <inertia ixx="0.000276" ixy="0.0" ixz="-2.3e-05" iyy="0.000244" iyz="1e-06" izz="7.1e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.0565 0.01955 -0.118391"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/upper_arm_link_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.0565 0.01955 -0.118391"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/upper_arm_link_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_lower_arm_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.07682091336987437 0.019449401609962638 0.0007855350559450025"/>
+      <mass value="0.14931353567203562"/>
+      <inertia ixx="5.3e-05" ixy="-2e-06" ixz="-7e-06" iyy="0.000234" iyz="0.0" izz="0.000268"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.085177 0.018353 -0.23085"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/lower_arm_link_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.085177 0.018353 -0.23085"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/lower_arm_link_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_wrist_pitch_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.012444012165968216 0.019700647706552527 0.007055327401834982"/>
+      <mass value="0.01772245044549146"/>
+      <inertia ixx="8e-06" ixy="-0.0" ixz="-1e-06" iyy="6e-06" iyz="0.0" izz="7e-06"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.219276 0.017705 -0.234679"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/link_pitch_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.219276 0.017705 -0.234679"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/link_pitch_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_wrist_yaw_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.024499928462552473 -4.2987369628577935e-05 -0.004154699539631657"/>
+      <mass value="0.08567679182758908"/>
+      <inertia ixx="5.9e-05" ixy="0.0" ixz="1.7e-05" iyy="7.5e-05" iyz="0.0" izz="2.6e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.248572 -0.001351 -0.271296"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/link_yaw_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.248572 -0.001351 -0.271296"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/link_yaw_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_wrist_roll_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.029769169194226286 -0.0003404414774720009 0.007538866703660052"/>
+      <mass value="0.06594606839949692"/>
+      <inertia ixx="2.9e-05" ixy="-0.0" ixz="3e-06" iyy="2.7e-05" iyz="-0.0" izz="2.7e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.304139 -0.001175 -0.234075"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/link_roll_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.304139 -0.001175 -0.234075"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/link_roll_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_left_jaw_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.023806479253455026 -0.0016996718789872856 -0.019446683209120547"/>
+      <mass value="0.016624081834698816"/>
+      <inertia ixx="4e-06" ixy="-0.0" ixz="1e-06" iyy="8e-06" iyz="0.0" izz="6e-06"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.347749 -0.040991 -0.254594"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/left_jaw_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.347749 -0.040991 -0.254594"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/left_jaw_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <link name="$(arg arm_prefix)_right_jaw_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.023808169064152396 0.0016409164921040156 -0.02262577329786908"/>
+      <mass value="0.016623969125743532"/>
+      <inertia ixx="4e-06" ixy="0.0" ixz="-0.0" iyy="8e-06" iyz="0.0" izz="6e-06"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.34739 -0.000594 -0.254245"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/right_jaw_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.34739 -0.000594 -0.254245"/>
+      <geometry><mesh filename="package://so101_description/6dof_meshes/right_jaw_v1_1.stl" scale="0.001 0.001 0.001"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ==================== JOINTS ==================== -->
+  <!-- Joint names NOT prefixed — ros2_control uses them plain -->
+
+  <joint name="shoulder_pan" type="revolute">
+    <origin rpy="0 0 0" xyz="0.025192 0.000209 0.066415"/>
+    <parent link="$(arg arm_prefix)_base_link"/>
+    <child link="$(arg arm_prefix)_shoulder_link"/>
+    <axis xyz="0.008727 -0.0 0.999962"/>
+    <limit lower="-2.06" upper="2.01" effort="3.35" velocity="2.0"/>
+    <dynamics damping="0.6" friction="0.052"/>
+  </joint>
+
+  <transmission name="shoulder_pan_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="shoulder_pan"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor1"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <joint name="shoulder_lift" type="revolute">
+    <origin rpy="0 0 0" xyz="0.031308 -0.019759 0.051976"/>
+    <parent link="$(arg arm_prefix)_shoulder_link"/>
+    <child link="$(arg arm_prefix)_upper_arm_link"/>
+    <axis xyz="-0.008726 0.999962 7.6e-05"/>
+    <limit lower="-1.75" upper="1.75" effort="3.35" velocity="2.0"/>
+    <dynamics damping="0.6" friction="0.052"/>
+  </joint>
+
+  <transmission name="shoulder_lift_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="shoulder_lift"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor2"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <joint name="elbow_flex" type="revolute">
+    <origin rpy="0 0 0" xyz="0.028677 0.001197 0.112459"/>
+    <parent link="$(arg arm_prefix)_upper_arm_link"/>
+    <child link="$(arg arm_prefix)_lower_arm_link"/>
+    <axis xyz="-0.0 -1.0 0.0"/>
+    <limit effort="3.35" lower="-1.52" upper="1.76" velocity="2.0"/>
+    <dynamics damping="0.6" friction="0.052"/>
+  </joint>
+
+  <transmission name="elbow_flex_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="elbow_flex"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor3"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <joint name="wrist_flex" type="revolute">
+    <origin rpy="0 0 0" xyz="0.134099 0.000648 0.003829"/>
+    <parent link="$(arg arm_prefix)_lower_arm_link"/>
+    <child link="$(arg arm_prefix)_wrist_pitch_link"/>
+    <axis xyz="-0.008802 -0.999924 -0.00865"/>
+    <limit effort="3.35" lower="-1.69" upper="1.38" velocity="2.0"/>
+    <dynamics damping="0.6" friction="0.052"/>
+  </joint>
+
+  <transmission name="wrist_flex_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_flex"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor4"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <joint name="wrist_yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="0.029296 0.019056 0.036617"/>
+    <parent link="$(arg arm_prefix)_wrist_pitch_link"/>
+    <child link="$(arg arm_prefix)_wrist_yaw_link"/>
+    <axis xyz="0.014193 -5e-05 0.999899"/>
+    <limit effort="3.35" lower="-1.40" upper="1.32" velocity="2.0"/>
+    <dynamics damping="0.6" friction="0.052"/>
+  </joint>
+
+  <transmission name="wrist_yaw_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_yaw"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor5"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <joint name="wrist_roll" type="revolute">
+    <origin rpy="0 0 0" xyz="0.055567 -0.000176 -0.037221"/>
+    <parent link="$(arg arm_prefix)_wrist_yaw_link"/>
+    <child link="$(arg arm_prefix)_wrist_roll_link"/>
+    <axis xyz="0.999922 -0.008805 -0.008802"/>
+    <limit effort="3.35" lower="-3.08" upper="3.09" velocity="2.0"/>
+    <dynamics damping="0.6" friction="0.052"/>
+  </joint>
+
+  <transmission name="wrist_roll_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_roll"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor6"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <!-- gripper: 1 servo drives left jaw. Right jaw mimics via rack-and-pinion. -->
+  <joint name="gripper" type="prismatic">
+    <origin rpy="0 0 0" xyz="0.04361 0.021616 0.020519"/>
+    <parent link="$(arg arm_prefix)_wrist_roll_link"/>
+    <child link="$(arg arm_prefix)_left_jaw_link"/>
+    <axis xyz="0.008881 0.999923 0.008649"/>
+    <limit effort="100" lower="-0.013" upper="0.013" velocity="100"/>
+  </joint>
+
+  <transmission name="gripper_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gripper"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface></joint>
+    <actuator name="motor7"><hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface><mechanicalReduction>1</mechanicalReduction></actuator>
+  </transmission>
+
+  <!-- right jaw mimics gripper with opposite direction — no extra servo -->
+  <joint name="right_jaw_slider" type="prismatic">
+    <origin rpy="0 0 0" xyz="0.043251 -0.022781 0.02017"/>
+    <parent link="$(arg arm_prefix)_wrist_roll_link"/>
+    <child link="$(arg arm_prefix)_right_jaw_link"/>
+    <axis xyz="0.008881 0.999923 0.008649"/>
+    <limit effort="100" lower="-0.013" upper="0.013" velocity="100"/>
+    <mimic joint="gripper" multiplier="-1" offset="0"/>
+  </joint>
+
+</robot>

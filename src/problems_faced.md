@@ -4,12 +4,12 @@
         1. the namespace need to be manually added to the topic names
         2. need to add 
             Move Group Namespace: follower
-        3. oakd camera integration:
-            a. tf frames - aprent and child frame issue
-                - solved by creating a ros2 node that takes the data of all the april tags and then publishes tf frame between world and camera.
-            b. 
-        4. pipecat version mismatch - tested in python 3.11 and deployed in python 3.10
-            a. the async feature of stream is problematic.
+3. oakd camera integration:
+    a. tf frames - aprent and child frame issue
+        - solved by creating a ros2 node that takes the data of all the april tags and then publishes tf frame between world and camera.
+    b. 
+4. pipecat version mismatch - tested in python 3.11 and deployed in python 3.10
+    a. the async feature of stream is problematic.
 
 5. AnyGrasp SDK install (conda env `anygrasp`, CUDA 12.6, torch cu126).
    Full step-by-step + all 9 problems & fixes in: src/setup_anygrasp.md
@@ -23,5 +23,26 @@
        g. np.float removed -> pin numpy==1.23.5 (<1.24); install it LAST.
        h. graspnetAPI pulls deprecated sklearn -> SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True.
    For docker: patches c, d, e must be redone; .so must match docker python; license may need re-register.
+
+        
+
+6. 6DOF arm Gazebo ODE crash + controller config issues (dof_type:=dof_6)
+
+   Problem A — ODE physics crash on spawn:
+       Error: assertion "aabbBound >= dMinIntExact && aabbBound < dMaxIntExact" failed in collide() [collision_space.cpp:460]
+       Cause: shoulder_link STL collision mesh physically overlaps base_link STL mesh at the joint
+              connection. ODE handles box-box overlap fine but crashes on deep mesh-mesh interpenetration.
+       Fix:   Replace shoulder_link collision with a box. All other links keep STL mesh collision.
+              shoulder_link box: origin xyz="0.0194 0.0011 0.0068", size="0.050 0.040 0.1107"
+       Note:  Tested all links one by one. Only shoulder_link causes crash. Root cause is mesh
+              interpenetration at the shoulder_pan joint, not mesh size or vertex range.
+
+
+
+
+    problem- B
+        6A. right jaw moves under the influence of gravity. not mimicking the left jaw
+        6B. the orientation is 90 degrees to the cockwise
+        
 
         

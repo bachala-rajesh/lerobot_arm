@@ -26,6 +26,7 @@ def generate_launch_description() -> LaunchDescription:
     #####################
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
     sim_mode = LaunchConfiguration("sim_mode", default="gazebo")
+    dof_type = LaunchConfiguration("dof_type", default="dof_5")
 
 
 
@@ -36,16 +37,20 @@ def generate_launch_description() -> LaunchDescription:
     # simulation robot bringup node
     sim_robot_bringup_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_bringup, "launch", "follower_gazebo.launch.py")),
+        launch_arguments={
+            "dof_type": dof_type,
+        }.items(),
     )
-    
+
     #control node
     control_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "follower_joints_trajectory_control.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,
+            "dof_type": dof_type,
         }.items(),
-    ) 
+    )
 
 
     #####################
@@ -64,7 +69,12 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="gazebo",
                 description="Simulation mode: gazebo or isaacsim",
             ),
-            
+            DeclareLaunchArgument(
+                "dof_type",
+                default_value="dof_5",
+                description="Follower arm variant: dof_5 or dof_6",
+            ),
+
             sim_robot_bringup_node,
             control_node,
         ]

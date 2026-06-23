@@ -17,7 +17,6 @@ def generate_launch_description() -> LaunchDescription:
     #####################
     pkg_bringup = get_package_share_directory("so101_bringup")
     pkg_robot_description = get_package_share_directory("so101_description")
-    
     so101_description_share_path = os.path.dirname(pkg_robot_description)
     
     # Set GAZEBO resource path to include biped_description package
@@ -32,6 +31,8 @@ def generate_launch_description() -> LaunchDescription:
     # launch arguments and configurations related 
     #####################
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
+    dof_type = LaunchConfiguration("dof_type", default="dof_5")
+
 
 
 
@@ -45,6 +46,7 @@ def generate_launch_description() -> LaunchDescription:
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": "gazebo",
+            "dof_type": dof_type,
         }.items(),
     )
     
@@ -140,6 +142,11 @@ def generate_launch_description() -> LaunchDescription:
                 "use_sim_time",
                 default_value="true",
                 description="Use simulation (Gazebo) clock if true",
+            ),
+            DeclareLaunchArgument(
+                "dof_type",
+                default_value="dof_5",
+                description="Follower arm variant: dof_5 or dof_6",
             ),
 
             robot_description_node,

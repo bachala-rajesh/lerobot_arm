@@ -3,20 +3,24 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, TimerAction
 from launch.substitutions import LaunchConfiguration, PythonExpression
+from ament_index_python.packages import get_package_share_directory
 from launch.conditions import IfCondition
 from launch_ros.actions import Node, PushRosNamespace
 
 
 def generate_launch_description():
 
-    controllers_yaml = os.path.join(
-        get_package_share_directory('so101_control'),
-        'config',
-        'so101_follower_controllers.yaml',
-    )
+    pkg_control = get_package_share_directory('so101_control')
+    controllers_yaml_5dof = os.path.join(pkg_control, 'config', 'so101_follower_controllers.yaml')
+    controllers_yaml_6dof = os.path.join(pkg_control, 'config', 'so101_follower_6dof_controllers.yaml')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     sim_mode = LaunchConfiguration('sim_mode', default='real_robot')
+    dof_type = LaunchConfiguration('dof_type', default='dof_5')
+
+    controllers_yaml = PythonExpression([
+        "'", controllers_yaml_6dof, "' if '", dof_type, "' == 'dof_6' else '", controllers_yaml_5dof, "'"
+    ])
 
     # ros2_control_node — skipped in Gazebo (Gazebo spawns its own via the URDF plugin)
     controller_manager_group = GroupAction(
@@ -81,6 +85,11 @@ def generate_launch_description():
             'sim_mode',
             default_value='real_robot',
             description='Hardware mode: real_robot, gazebo, or isaacsim',
+        ),
+        DeclareLaunchArgument(
+            'dof_type',
+            default_value='dof_5',
+            description='Follower arm variant: dof_5 or dof_6',
         ),
 
         controller_manager_group,

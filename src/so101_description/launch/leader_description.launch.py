@@ -12,7 +12,6 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description() -> LaunchDescription:
 
     pkg_description = get_package_share_directory('so101_description')
-    pkg_control = get_package_share_directory('so101_control')
 
     scene_urdf_path = os.path.join(pkg_description, 'urdf', 'scene.urdf')
     arm_xacro_path = os.path.join(pkg_description, 'urdf', 'so101_arm_with_control.urdf.xacro')
@@ -30,7 +29,7 @@ def generate_launch_description() -> LaunchDescription:
     leader_joint_config_file = LaunchConfiguration('leader_joint_config_file', default='')
     leader_gazebo_controllers_config = LaunchConfiguration(
         'leader_gazebo_controllers_config',
-        default=os.path.join(pkg_control, 'config', 'so101_leader_controllers.yaml'),
+        default='',
     )
 
     #####################
@@ -39,12 +38,13 @@ def generate_launch_description() -> LaunchDescription:
     with open(scene_urdf_path, 'r') as f:
         scene_description = f.read()
 
-    # Leader: description only — ros2_control block skipped via moveit_status:=true
+    # Leader: always 5DOF, ros2_control block skipped via moveit_status:=true
     leader_description = Command([
         PathJoinSubstitution([FindExecutable(name='xacro')]),
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
         ' arm_prefix:=leader',
+        ' dof_type:=dof_5',
         ' command:=', leader_command,
         ' usb_port:=', leader_usb_port,
         ' joint_config_file:=', leader_joint_config_file,
@@ -122,9 +122,7 @@ def generate_launch_description() -> LaunchDescription:
         ),
         DeclareLaunchArgument(
             'leader_gazebo_controllers_config',
-            default_value=os.path.join(
-                get_package_share_directory('so101_control'), 'config', 'so101_leader_controllers.yaml'
-            ),
+            default_value='',
             description='Absolute path to the Gazebo controllers YAML for the leader arm',
         ),
 

@@ -5,7 +5,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -32,19 +32,19 @@ def generate_launch_description() -> LaunchDescription:
     # launch arguments and configurations related 
     #####################
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
-
-
+    dof_type = LaunchConfiguration("dof_type", default="dof_5")
 
     #####################
-    # Nodes 
+    # Nodes
     #####################
-    
+
     # robot description node
     robot_description_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_robot_description, "launch", "follower_description.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": "gazebo",
+            "dof_type": dof_type,
         }.items(),
     )
     
@@ -87,6 +87,10 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
     )
 
+    # 6DOF arm meshes have a different base-frame orientation than 5DOF — rotated 90 deg to the left.
+    # Counter-rotate by -1.5708 rad on spawn to align it the same way as the 5DOF arm.
+    spawn_yaw = PythonExpression(["'-1.5708' if '", dof_type, "' == 'dof_6' else '0.0'"])
+
     # Spawn follower arm — reads from /follower/robot_description.
     # Position in Gazebo world = table_link position (z=0.5) + static TF offset (y=0.25, z=0.47).
     spawn_robot_node = Node(
@@ -95,9 +99,9 @@ def generate_launch_description() -> LaunchDescription:
         arguments=["-topic", "/follower/robot_description",
                    "-name", "follower",
                    "-x", "0.0",
-                   "-y", "0.25",
+                   "-y", "0.40",
                    "-z", "0.97",
-                   "-Y", "0.0",
+                   "-Y", spawn_yaw,
                    ],
         parameters=[{"use_sim_time": use_sim_time}],
         emulate_tty=True,
@@ -118,6 +122,11 @@ def generate_launch_description() -> LaunchDescription:
                 "use_sim_time",
                 default_value="true",
                 description="Use simulation (Gazebo) clock if true",
+            ),
+            DeclareLaunchArgument(
+                "dof_type",
+                default_value="dof_5",
+                description="Follower arm variant: dof_5 or dof_6",
             ),
 
             robot_description_node,

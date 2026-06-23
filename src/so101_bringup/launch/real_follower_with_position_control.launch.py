@@ -5,7 +5,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node, PushRosNamespace
 
 
@@ -28,6 +28,7 @@ def generate_launch_description() -> LaunchDescription:
     #####################
     sim_mode = LaunchConfiguration("sim_mode", default="real_robot")
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    dof_type = LaunchConfiguration('dof_type', default='dof_5')
     follower_usb_port = LaunchConfiguration('follower_usb_port', default='/dev/lerobot_follower')
 
     #####################
@@ -38,6 +39,7 @@ def generate_launch_description() -> LaunchDescription:
         launch_arguments={
             'use_sim_time': use_sim_time,
             'sim_mode': 'real_robot',
+            'dof_type': dof_type,
             'follower_usb_port': follower_usb_port,
             'follower_joint_config_file': follower_calibration,
         }.items(),
@@ -50,14 +52,20 @@ def generate_launch_description() -> LaunchDescription:
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,
+            "dof_type": dof_type,
         }.items(),
-    ) 
+    )
 
 
     #####################
     # LaunchDescription
     #####################
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'dof_type',
+            default_value='dof_5',
+            description='Follower arm variant: dof_5 or dof_6',
+        ),
         DeclareLaunchArgument(
             'follower_usb_port',
             default_value='/dev/lerobot_follower',

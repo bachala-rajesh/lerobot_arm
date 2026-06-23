@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-  <robot name="so101_arm">
+  <robot name="so101_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <ros2_control name="so101_$(arg arm_prefix)_sim" type="system">
       <hardware>
         <plugin>gz_ros2_control/GazeboSimSystem</plugin>
@@ -25,6 +25,13 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
       </joint>
+      <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+      <joint name="wrist_yaw">
+        <command_interface name="position" />
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      </xacro:if>
       <joint name="wrist_roll">
         <command_interface name="position" />
         <state_interface name="position"/>
@@ -32,6 +39,13 @@
       </joint>
       <joint name="gripper">
         <command_interface name="position" />
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="right_jaw_slider">
+        <param name="mimic">gripper</param>
+        <param name="multiplier">-1</param>
+        <command_interface name="position"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
       </joint>

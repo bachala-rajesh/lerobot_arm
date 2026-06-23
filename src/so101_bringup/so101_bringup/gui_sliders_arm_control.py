@@ -18,7 +18,7 @@ It only shows the window and lets you move sliders.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
@@ -42,6 +42,26 @@ from rclpy.executors import SingleThreadedExecutor
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
+
+
+JOINT_LIMITS_5DOF: Dict[str, Tuple[float, float]] = {
+    "shoulder_pan":  (-2.055,    2.058),
+    "shoulder_lift": (-2.018,    2.018),
+    "elbow_flex":    (-1.653,    1.654),
+    "wrist_flex":    (-1.786,    1.790),
+    "wrist_roll":    (-3.194,    4.120),
+    "gripper":       (-0.174533, 1.74533),
+}
+
+JOINT_LIMITS_6DOF: Dict[str, Tuple[float, float]] = {
+    "shoulder_pan":  (-2.06,  2.01),
+    "shoulder_lift": (-1.75,  1.75),
+    "elbow_flex":    (-1.52,  1.76),
+    "wrist_flex":    (-1.69,  1.38),
+    "wrist_yaw":     (-1.40,  1.32),
+    "wrist_roll":    (-3.08,  3.09),
+    "gripper":       (-0.013, 0.013),
+}
 
 
 class RosArmPositionsPublisher(Node):
@@ -143,16 +163,18 @@ class ArmSlidersWindow(QMainWindow):
     Main window that holds all joint sliders for the robotic arm.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  joint_names: List[str],
+                 joint_limits: Dict[str, Tuple[float, float]],
                  ros_arm_position_publisher_node: Optional[RosArmPositionsPublisher] = None) -> None:
         super().__init__()
 
         self.joint_names: List[str] = joint_names
+        self.joint_limits: Dict[str, Tuple[float, float]] = joint_limits
         self.joint_widgets: Dict[str, JointSliderWidget] = {}
         self.ros_publisher_node: Optional[RosArmPositionsPublisher] = ros_arm_position_publisher_node
 
-        self.setWindowTitle("SO-101 Arm Joint Sliders (PyQt6)")
+        self.setWindowTitle(f"SO-101 Arm Joint Sliders — {len(joint_names)-1}DOF")
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -164,7 +186,8 @@ class ArmSlidersWindow(QMainWindow):
         sliders_layout = QGridLayout()
 
         for idx, name in enumerate(self.joint_names):
-            joint_widget = JointSliderWidget(name)
+            lo, hi = self.joint_limits.get(name, (-3.14, 3.14))
+            joint_widget = JointSliderWidget(name, min_rad=lo, max_rad=hi)
             sliders_layout.addWidget(joint_widget, 0, idx)
             self.joint_widgets[name] = joint_widget
 
@@ -206,7 +229,7 @@ class ArmSlidersWindow(QMainWindow):
         
 
 def main() -> None:
-    choice = input("Choose 'press 1' for leader, or 'press 2' for follower: ")
+    choice = input("Choose arm: press 1 for leader, press 2 for follower: ")
     if choice == "1":
         arm_name = "leader"
     elif choice == "2":
@@ -214,19 +237,36 @@ def main() -> None:
     else:
         print("Invalid choice. Please select '1' or '2'.")
         return
-    
+
+    dof_choice = input("Choose DOF: press 1 for 5DOF, press 2 for 6DOF: ")
+    if dof_choice == "1":
+        joint_names: List[str] = [
+            "shoulder_pan",
+            "shoulder_lift",
+            "elbow_flex",
+            "wrist_flex",
+            "wrist_roll",
+            "gripper",
+        ]
+        joint_limits = JOINT_LIMITS_5DOF
+    elif dof_choice == "2":
+        joint_names = [
+            "shoulder_pan",
+            "shoulder_lift",
+            "elbow_flex",
+            "wrist_flex",
+            "wrist_yaw",
+            "wrist_roll",
+            "gripper",
+        ]
+        joint_limits = JOINT_LIMITS_6DOF
+    else:
+        print("Invalid choice. Please select '1' or '2'.")
+        return
+
     rclpy.init()
 
     app = QApplication(sys.argv)
-
-    joint_names: List[str] = [
-        "shoulder_pan",
-        "shoulder_lift",
-        "elbow_flex",
-        "wrist_flex",
-        "wrist_roll",
-        "gripper",
-    ]
     
     ros_arm_position_publisher_node = RosArmPositionsPublisher(joint_names, arm_name)
     
@@ -235,7 +275,7 @@ def main() -> None:
     ros_thread = threading.Thread(target=executor.spin, daemon=True)
     ros_thread.start()
     
-    window = ArmSlidersWindow(joint_names, ros_arm_position_publisher_node=ros_arm_position_publisher_node)
+    window = ArmSlidersWindow(joint_names, joint_limits, ros_arm_position_publisher_node=ros_arm_position_publisher_node)
     window.show()
 
     # ensure ros2 shuts down whent he Qt app exits

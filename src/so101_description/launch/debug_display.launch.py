@@ -1,36 +1,40 @@
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.parameter_descriptions import ParameterValue
 import os
 from ament_index_python.packages import get_package_share_directory
-import xacro
 
 
 def generate_launch_description():
-    # Check if we're told to use sim time
     use_sim_time = LaunchConfiguration("use_sim_time")
-
-    # New parameter to control whether to show GUI sliders or use real robot
     use_gui = LaunchConfiguration("use_gui")
-
-    # Parameter for which joint_states topic to use
     joint_states_topic = LaunchConfiguration("joint_states_topic")
+    dof_type = LaunchConfiguration("dof_type")
 
-    # Process the URDF file
     pkg_path = os.path.join(get_package_share_directory("so101_description"))
-    xacro_file = os.path.join(pkg_path, "urdf", "robots", "so101_arm.urdf.xacro")
-    robot_description_config = xacro.process_file(xacro_file)
-    robot_description = {"robot_description": robot_description_config.toxml()}
+    xacro_file = os.path.join(pkg_path, "urdf", "so101_arm_with_control.urdf.xacro")
+
+    robot_description = ParameterValue(
+        Command([
+            PathJoinSubstitution([FindExecutable(name='xacro')]),
+            ' ', xacro_file,
+            ' arm_prefix:=follower',
+            ' moveit_status:=true',
+            ' dof_type:=', dof_type,
+        ]),
+        value_type=str,
+    )
 
     # Create a robot_state_publisher node
     node_robot_state_publisher = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="screen",
-        parameters=[robot_description],
+        parameters=[{'robot_description': robot_description, 'use_sim_time': use_sim_time}],
         remappings=[("/joint_states", joint_states_topic)],
     )
 
@@ -79,6 +83,11 @@ def generate_launch_description():
                 "use_sim_time",
                 default_value="false",
                 description="Use sim time if true",
+            ),
+            DeclareLaunchArgument(
+                "dof_type",
+                default_value="dof_5",
+                description="Arm variant: dof_5 (default) or dof_6 (6DOF wrist_yaw)",
             ),
             DeclareLaunchArgument(
                 "use_gui",
