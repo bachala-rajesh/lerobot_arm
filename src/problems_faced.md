@@ -43,6 +43,29 @@
     problem- B
         6A. right jaw moves under the influence of gravity. not mimicking the left jaw
         6B. the orientation is 90 degrees to the cockwise
+
+7. MoveIt2 error: Joint 'right_jaw_slider_mimic' not found in model 'so101_arm'  [NOT SOLVED]
+
+   Root cause:
+       - 6DOF URDF has right_jaw_slider joint with <mimic joint="gripper" multiplier="-1"/>
+       - Gazebo ros2_control plugin reads the mimic param and creates a hardware interface
+         named right_jaw_slider_mimic (appends _mimic suffix)
+       - This name is published in /follower/joint_states
+       - MoveIt reads that topic, tries getJointModel("right_jaw_slider_mimic") → not in model → ERROR
+       - Source confirmed: SO answer + ros2 topic echo showing right_jaw_slider_mimic in joint_states
+       - Source file: gz_ros2_control plugin (ign_system.cpp line ~279)
+
+   Temporary fix (applied):
+       - Remove mimic params from right_jaw_slider block in:
+         src/so101_description/urdf/ros2_control/sim_gazebo_so101_follower_ros2_control.urdf
+         (remove lines: <param name="mimic">gripper</param> and <param name="multiplier">-1</param>)
+       - Side effect: right jaw does NOT mirror left jaw in Gazebo simulation
+         Grasp simulation will be asymmetric (only left jaw closes)
+
+   Proper fix (not done):
+       - Build gz_ros2_control from source
+       - In ign_system.cpp, change the _mimic suffix to empty string ""
+       - This preserves mimic behavior AND fixes MoveIt error
         
 
         
