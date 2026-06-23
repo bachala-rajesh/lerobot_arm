@@ -6,6 +6,7 @@ from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -33,6 +34,22 @@ def generate_launch_description() -> LaunchDescription:
     #####################
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
     dof_type = LaunchConfiguration("dof_type", default="dof_5")
+    use_camera = LaunchConfiguration("use_camera", default="true")
+
+    pkg_image_pipeline = get_package_share_directory("image_pipeline")
+
+    # OAK-D camera mount pose (world -> camera). This is the SINGLE place to set
+    # where the sim camera sits. Edit here, or override on the CLI, e.g.
+    #   cam_pos_x:=0.5 cam_pitch:=0.7
+    # xyz in metres, rpy in radians.
+    cam_pose = {
+        "cam_pos_x": LaunchConfiguration("cam_pos_x", default="0.4"),
+        "cam_pos_y": LaunchConfiguration("cam_pos_y", default="0.0"),
+        "cam_pos_z": LaunchConfiguration("cam_pos_z", default="1.5"),
+        "cam_roll": LaunchConfiguration("cam_roll", default="0.0"),
+        "cam_pitch": LaunchConfiguration("cam_pitch", default="0.6"),
+        "cam_yaw": LaunchConfiguration("cam_yaw", default="3.14159"),
+    }
 
     #####################
     # Nodes
@@ -110,6 +127,36 @@ def generate_launch_description() -> LaunchDescription:
     
     
 
+    # OAK-D camera (sim). RSP (description + TF) from image_pipeline, spawn here.
+    # Gated by use_camera (default true). Pose is baked into /oak/robot_description.
+    oak_camera_rsp = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_image_pipeline, "launch", "oakd_camera_rsp.launch.py")
+        ),
+        launch_arguments={"use_sim_time": use_sim_time, **cam_pose}.items(),
+        condition=IfCondition(use_camera),
+    )
+
+    spawn_oak_camera_node = Node(
+        package="ros_gz_sim",
+        executable="create",
+        name="spawn_oak_camera",
+        arguments=["-topic", "/oak/robot_description", "-name", "oak_camera"],
+        parameters=[{"use_sim_time": use_sim_time}],
+        output="screen",
+        condition=IfCondition(use_camera),
+    )
+
+    # Build /oak/points in ROS from the depth image (faster than bridging the
+    # gz cloud). image_pipeline owns this processing.
+    oak_pointcloud = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_image_pipeline, "launch", "oakd_sim_pointcloud.launch.py")
+        ),
+        launch_arguments={"use_sim_time": use_sim_time}.items(),
+        condition=IfCondition(use_camera),
+    )
+
     #####################
     # creating LaunchDescription
     #####################
@@ -128,11 +175,19 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="dof_5",
                 description="Follower arm variant: dof_5 or dof_6",
             ),
+            DeclareLaunchArgument(
+                "use_camera",
+                default_value="true",
+                description="Spawn the simulated OAK-D camera",
+            ),
 
             robot_description_node,
             gz_node,
             gz_bridge_node,
             spawn_scene_node,
             spawn_robot_node,
+            oak_camera_rsp,
+            spawn_oak_camera_node,
+            oak_pointcloud,
         ]
     )

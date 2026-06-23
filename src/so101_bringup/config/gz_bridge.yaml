@@ -6,6 +6,42 @@
   gz_type_name: "ignition.msgs.Clock"
   direction: GZ_TO_ROS
 
+# ===================== OAK-D sim camera (Layer 2) =====================
+# gz rgbd_camera publishes under "oak_rgbd". Renamed here to match the REAL
+# camera topic names (/oak/rgb/*, /oak/stereo/*). /oak/points is sim-only bonus.
+
+# RGB image  ->  /oak/rgb/image_raw
+- ros_topic_name: "/oak/rgb/image_raw"
+  gz_topic_name: "oak_rgbd/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
+  direction: GZ_TO_ROS
+
+# RGB camera_info  ->  /oak/rgb/camera_info
+- ros_topic_name: "/oak/rgb/camera_info"
+  gz_topic_name: "oak_rgbd/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+# Depth image  ->  /oak/stereo/image_raw
+- ros_topic_name: "/oak/stereo/image_raw"
+  gz_topic_name: "oak_rgbd/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
+  direction: GZ_TO_ROS
+
+# Depth camera_info (same intrinsics as rgb)  ->  /oak/stereo/camera_info
+- ros_topic_name: "/oak/stereo/camera_info"
+  gz_topic_name: "oak_rgbd/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+# NOTE: gz point cloud is NOT bridged (PointCloudPacked is heavy -> slow).
+# /oak/points is built in ROS from the depth image by depth_image_proc, see
+# image_pipeline/launch/oakd_sim_pointcloud.launch.py.
+
 
 
 

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  OAK-D camera for GAZEBO SIM (gz / Ignition) — Layer 1.
+
+  Uses the FULL official depthai_descriptions macro, so ALL camera frames are
+  available (oak, oak_rgb/left/right_camera_frame + _optical_frame, oak_imu_frame).
+  Useful later for stereo, IMU, per-camera processing.
+
+  gz problem: the depthai macro links are EMPTY (frames only, no inertia). gz
+  needs at least ONE real link or it errors "A model must have at least one link".
+  Fix: add ONE real anchor link (oak_camera_link) with inertia + collision, and
+  hang the full macro off it. The empty macro links then become valid SDF frames
+  attached to that real link.
+
+  Pose: comes from the caller (so101_bringup). It is applied on the
+  world -> oak_camera_link joint. The macro is called with cam_pos_* = 0 so it
+  does NOT double-apply the pose. Pose rides inside the description, so the spawn
+  side (ros_gz_sim create) stays dumb.
+
+  Independent model: real robot uses the depthai driver + AprilTag pose; sim uses
+  this. They never run together -> no duplicate frames, no world->oak TF fight.
+-->
+<robot name="oakd_camera_sim" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- depthai_camera macro (+ its base macro). -->
+  <xacro:include filename="$(find depthai_descriptions)/urdf/include/depthai_macro.urdf.xacro"/>
+
+  <!-- Mount pose (world -> camera). REQUIRED — provided by the caller (bringup).
+       Defaults are only a fallback. xyz metres, rpy radians. -->
+  <xacro:arg name="cam_pos_x" default="0.4"/>
+  <xacro:arg name="cam_pos_y" default="0.0"/>
+  <xacro:arg name="cam_pos_z" default="1.5"/>
+  <xacro:arg name="cam_roll"  default="0.0"/>
+  <xacro:arg name="cam_pitch" default="0.6"/>
+  <xacro:arg name="cam_yaw"   default="3.14159"/>
+
+  <!-- Global anchor so RSP publishes world -> oak_camera_link on /tf. -->
+  <link name="world"/>
+
+  <!-- Real anchor link: gz keeps the model because this link has inertia.
+       No visual here — the macro provides the OAK-D mesh. Collision is a small
+       box approximating the camera body. -->
+  <link name="oak_camera_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="9.0e-06" ixy="0.0" ixz="0.0"
+               iyy="7.2e-05" iyz="0.0" izz="7.5e-05"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.091 0.028 0.0175"/></geometry>  <!-- OAK-D approx -->
+    </collision>
+  </link>
+
+  <!-- Apply the mount pose here (world -> anchor). -->
+  <joint name="oak_mount_joint" type="fixed">
+    <parent link="world"/>
+    <child link="oak_camera_link"/>
+    <origin xyz="$(arg cam_pos_x) $(arg cam_pos_y) $(arg cam_pos_z)"
+            rpy="$(arg cam_roll) $(arg cam_pitch) $(arg cam_yaw)"/>
+  </joint>
+
+  <!-- Full camera frame tree, hung off the real anchor link.
+       cam_pos_* = 0 because the pose is already applied on oak_mount_joint.
+       simulation=true -> mesh uses file:// URI (gz needs that). -->
+  <xacro:depthai_camera
+      camera_name="oak"
+      camera_model="OAK-D"
+      parent="oak_camera_link"
+      base_frame="oak"
+      cam_pos_x="0" cam_pos_y="0" cam_pos_z="0"
+      cam_roll="0" cam_pitch="0" cam_yaw="0"
+      simulation="true"/>
+
+  <!-- ============ gz RGBD CAMERA SENSOR (Layer 2) ============
+       Attached to oak_camera_link (body frame, +X = view direction).
+       One rgbd_camera sensor -> rgb image + depth image + point cloud + info.
+       optical_frame_id sets the message frame_id to the REP-103 optical frame,
+       so the cloud lines up with TF. gz publishes under topic "oak_rgbd":
+         oak_rgbd/image, oak_rgbd/depth_image, oak_rgbd/points, oak_rgbd/camera_info
+       The ros_gz_bridge renames these to the real-camera topic names. -->
+  <gazebo reference="oak_camera_link">
+    <sensor name="oak_rgbd" type="rgbd_camera">
+      <topic>oak_rgbd</topic>
+      <update_rate>10</update_rate>           <!-- eases sim loop; plenty for octomap -->
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+      <camera>
+        <horizontal_fov>1.25</horizontal_fov>   <!-- ~71 deg, OAK-D RGB -->
+        <image>
+          <!-- Full res OK now: we bridge only the depth/rgb IMAGES (light),
+               not the gz point cloud. The cloud is built in ROS by
+               depth_image_proc (see oakd_sim_pointcloud.launch.py). -->
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.2</near>
+          <far>4.0</far>
+        </clip>
+        <optical_frame_id>oak_rgb_camera_optical_frame</optical_frame_id>
+      </camera>
+    </sensor>
+  </gazebo>
+
+</robot>
