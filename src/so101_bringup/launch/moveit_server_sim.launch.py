@@ -31,9 +31,17 @@ def generate_launch_description():
     #####################
 
     # Move Group Node
-    moveit_config = MoveItConfigsBuilder(
-        "so101_arm", package_name=pkg_moveit_name
-    ).to_moveit_configs()
+    moveit_config = (
+        MoveItConfigsBuilder("so101_arm", package_name=pkg_moveit_name)
+        # Build the arm with sim_mode=gazebo so the URDF world_joint puts the arm
+        # ON THE TABLE (same single source the gazebo body + RViz/TF use).
+        # moveit_status=true still skips the hardware block, so sim_mode only
+        # selects the world placement here.
+        .robot_description(mappings={"sim_mode": "gazebo", "dof_type": "dof_5"})
+        # Load 3D sensor config -> octomap collision avoidance from /oak/points.
+        .sensors_3d(file_path="config/sensors_3d.yaml")
+        .to_moveit_configs()
+    )
 
     move_group_node = Node(
         package="moveit_ros_move_group",
