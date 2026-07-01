@@ -7,7 +7,7 @@ Subscribes:
   pointcloud_topic  (sensor_msgs/PointCloud2) default: /oak/points
 
 Service:
-  /segment_grasppose/find_grasp_pose  (so101_interfaces/srv/FindGraspPose)
+  /segment_grasppose/find_grasp_pose  (project_interfaces/srv/FindGraspPose)
 
 Pipeline (stubs — wire models in TODO sections):
   1. Resolve bboxes from request.bboxes_xyxy OR scene_db query by object_label
@@ -30,7 +30,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image, PointCloud2
 from sensor_msgs_py import point_cloud2 as pc2
 
-from so101_interfaces.srv import FindGraspPose
+from project_interfaces.srv import FindGraspPose
 
 
 class SegmentGraspPoseNode(Node):

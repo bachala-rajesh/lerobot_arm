@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """SAM2 segmentation action server.
 
-Action: sam2/segment  (so101_interfaces/action/SegmentObject)
+Action: sam2/segment  (project_interfaces/action/SegmentObject)
 
 Goal:
   bbox_xyxy  — [x1, y1, x2, y2] in camera pixel space
@@ -16,6 +16,7 @@ Result:
 Feedback (only when track=true):
   centroid_u, centroid_v, score, frame_count
 """
+
 from __future__ import annotations
 
 import threading
@@ -35,7 +36,7 @@ from sensor_msgs.msg import CompressedImage
 from sam2.build_sam import build_sam2
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 
-from so101_interfaces.action import SegmentObject
+from project_interfaces.action import SegmentObject
 
 
 class SAM2Node(Node):
@@ -43,9 +44,7 @@ class SAM2Node(Node):
         super().__init__("sam2_node")
 
         # ── params ────────────────────────────────────────────────
-        self.declare_parameter(
-            "model_config", "configs/sam2.1/sam2.1_hiera_l.yaml"
-        )
+        self.declare_parameter("model_config", "configs/sam2.1/sam2.1_hiera_l.yaml")
         self.declare_parameter(
             "checkpoint",
             "/home/mira/workspaces/lerobot_ws/src/deep_learning_models/"
@@ -71,8 +70,8 @@ class SAM2Node(Node):
         self.get_logger().info("SAM2 loaded.")
 
         # ── frame cache ───────────────────────────────────────────
-        self._frame: np.ndarray | None = None   # RGB HxWx3
-        self._frame_seq: int = 0                # increments each new frame
+        self._frame: np.ndarray | None = None  # RGB HxWx3
+        self._frame_seq: int = 0  # increments each new frame
         self._frame_lock = threading.Lock()
 
         # ── ROS ───────────────────────────────────────────────────
@@ -107,7 +106,9 @@ class SAM2Node(Node):
 
     def _get_frame(self) -> tuple[np.ndarray | None, int]:
         with self._frame_lock:
-            return (None if self._frame is None else self._frame.copy()), self._frame_seq
+            return (
+                None if self._frame is None else self._frame.copy()
+            ), self._frame_seq
 
     # ── action execute ────────────────────────────────────────────
     def _execute(self, goal_handle) -> SegmentObject.Result:
@@ -154,7 +155,9 @@ class SAM2Node(Node):
         res.centroid_v = float(cv_)
         res.score = float(score)
         goal_handle.succeed()
-        self.get_logger().info(f"Single-shot done. score={score:.3f} centroid=({cu:.1f},{cv_:.1f})")
+        self.get_logger().info(
+            f"Single-shot done. score={score:.3f} centroid=({cu:.1f},{cv_:.1f})"
+        )
         return res
 
     # ── tracking mode ─────────────────────────────────────────────
@@ -165,7 +168,7 @@ class SAM2Node(Node):
         init_seq: int,
     ) -> SegmentObject.Result:
         count = 0
-        last_seq = init_seq - 1   # ensures first frame always processed
+        last_seq = init_seq - 1  # ensures first frame always processed
         mask: np.ndarray | None = None
         cu, cv_, score = 0.0, 0.0, 0.0
 
@@ -214,9 +217,7 @@ class SAM2Node(Node):
     def _segment(self, frame: np.ndarray, bbox: np.ndarray) -> tuple[np.ndarray, float]:
         with self._predict_lock:
             self._predictor.set_image(frame)
-            masks, scores, _ = self._predictor.predict(
-                box=bbox, multimask_output=False
-            )
+            masks, scores, _ = self._predictor.predict(box=bbox, multimask_output=False)
         mask = masks[0].astype(bool)
         return mask, float(scores[0])
 

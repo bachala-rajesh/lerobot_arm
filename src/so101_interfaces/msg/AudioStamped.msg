@@ -1,2 +1,0 @@
-std_msgs/Header header
-so101_interfaces/Audio audio

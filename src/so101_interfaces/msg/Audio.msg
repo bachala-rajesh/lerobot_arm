@@ -1,2 +1,0 @@
-so101_interfaces/AudioData audio_data
-so101_interfaces/AudioInfo info

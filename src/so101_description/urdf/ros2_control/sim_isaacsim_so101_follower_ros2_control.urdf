@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <robot name="so101_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+  <xacro:if value="${'$(arg dof)' == '6'}">
     <xacro:property name="wrist_roll_id" value="6"/>
     <xacro:property name="gripper_id"    value="7"/>
   </xacro:if>
-  <xacro:unless value="${'$(arg dof_type)' == 'dof_6'}">
+  <xacro:unless value="${'$(arg dof)' == '6'}">
     <xacro:property name="wrist_roll_id" value="5"/>
     <xacro:property name="gripper_id"    value="6"/>
   </xacro:unless>
@@ -39,7 +39,7 @@
       <command_interface name="position"/>
       <state_interface name="position"/>
     </joint>
-    <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+    <xacro:if value="${'$(arg dof)' == '6'}">
     <joint name="wrist_yaw">
       <param name="id">5</param>
       <param name="model">sts3215</param>

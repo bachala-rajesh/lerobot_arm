@@ -1,8 +1,0 @@
-string text
-string language "en"
-float32 volume 1.0
-float32 rate 1.0
----
-string text
----
-so101_interfaces/AudioStamped audio

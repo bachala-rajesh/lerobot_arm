@@ -23,7 +23,7 @@ def generate_launch_description() -> LaunchDescription:
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     sim_mode = LaunchConfiguration('sim_mode', default='real_robot')
-    dof_type = LaunchConfiguration('dof_type', default='dof_5')
+    dof = LaunchConfiguration('dof', default='5')
 
     # follower
     follower_usb_port = LaunchConfiguration('follower_usb_port', default='/dev/lerobot_follower')
@@ -33,9 +33,9 @@ def generate_launch_description() -> LaunchDescription:
     leader_usb_port = LaunchConfiguration('leader_usb_port', default='/dev/lerobot_leader')
     leader_real_robot_joint_config = LaunchConfiguration('leader_real_robot_joint_config', default='')
 
-    # Gazebo controllers YAMLs — computed internally based on dof_type
+    # Gazebo controllers YAMLs — computed internally based on dof
     follower_yaml_filename = PythonExpression([
-        "'so101_follower_6dof_controllers.yaml' if '", dof_type, "' == 'dof_6' else 'so101_follower_controllers.yaml'"
+        "'so101_follower_6dof_controllers.yaml' if '", dof, "' == '6' else 'so101_follower_controllers.yaml'"
     ])
     follower_gazebo_controllers_yaml = PathJoinSubstitution([
         FindPackageShare('so101_control'), 'config', follower_yaml_filename
@@ -56,7 +56,7 @@ def generate_launch_description() -> LaunchDescription:
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
         ' arm_prefix:=follower',
-        ' dof_type:=', dof_type,
+        ' dof:=', dof,
         ' usb_port:=', follower_usb_port,
         ' real_robot_joint_config:=', follower_real_robot_joint_config,
         ' gazebo_controllers_config:=', follower_gazebo_controllers_yaml,
@@ -68,7 +68,7 @@ def generate_launch_description() -> LaunchDescription:
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
         ' arm_prefix:=leader',
-        ' dof_type:=dof_5',
+        ' dof:=5',
         ' usb_port:=', leader_usb_port,
         ' real_robot_joint_config:=', leader_real_robot_joint_config,
         ' gazebo_controllers_config:=', leader_gazebo_controllers_yaml,
@@ -162,9 +162,9 @@ def generate_launch_description() -> LaunchDescription:
             description='Hardware mode: real_robot, gazebo, or isaacsim',
         ),
         DeclareLaunchArgument(
-            'dof_type',
-            default_value='dof_5',
-            description='Follower arm variant: dof_5 (default) or dof_6 (6DOF wrist_yaw)',
+            'dof',
+            default_value='5',
+            description='Follower arm variant: 5 (default) or 6 (6DOF wrist_yaw)',
         ),
         DeclareLaunchArgument(
             'follower_usb_port',

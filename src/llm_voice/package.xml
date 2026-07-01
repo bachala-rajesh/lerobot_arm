@@ -2,18 +2,15 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>llm_voice</name>
-  <version>0.0.0</version>
-  <description>scripts for voice assitant using pipecat and langraph</description>
+  <version>0.1.0</version>
+  <description>Voice assistant using Pipecat + LangGraph + Qwen models via DashScope. STT → LLM agent with ROS2 tools → TTS pipeline.</description>
   <maintainer email="bachala_rajesh@outlook.com">Bachala Rajesh</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>scene_db</exec_depend>
-
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

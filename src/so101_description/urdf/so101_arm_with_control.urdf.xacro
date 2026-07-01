@@ -9,7 +9,7 @@
     <xacro:arg name="command"                default="true" />
     <xacro:arg name="gazebo_controllers_config" default="" />
     <xacro:arg name="arm_prefix" default="follower" />
-    <xacro:arg name="dof_type"   default="dof_5" />
+    <xacro:arg name="dof"   default="5" />
     <!-- Prefix for all URDF link names: "follower_" or "leader_".
          Keeps both arms' TF frames unique in the global tree. -->
 
@@ -32,18 +32,18 @@
 
     <!-- ============ ARM WORLD PLACEMENT — SINGLE SOURCE OF TRUTH ============
          world_joint = where the arm base sits in the world.
-         Chosen automatically by sim_mode (and dof_type for the yaw).
-           - gazebo : arm sits on the table (0, 0.40, 0.97). dof_6 mesh needs -90 deg yaw.
+         Chosen automatically by sim_mode (and dof for the yaw).
+           - gazebo : arm sits on the table (0, 0.40, 0.97). 6 mesh needs -90 deg yaw.
            - else   : world origin (0,0,0) -> REAL ROBOT SAFE default.-->
     <xacro:property name="sim_mode_val" value="$(arg sim_mode)"/>
-    <xacro:property name="dof_val"      value="$(arg dof_type)"/>
+    <xacro:property name="dof_val"      value="$(arg dof)"/>
 
     <xacro:if value="${sim_mode_val == 'gazebo'}">
         <xacro:property name="base_xyz" value="0 0.40 0.97"/>
-        <xacro:if value="${dof_val == 'dof_6'}">
+        <xacro:if value="${dof_val == '6'}">
             <xacro:property name="base_rpy" value="0 0 -1.5708"/>
         </xacro:if>
-        <xacro:unless value="${dof_val == 'dof_6'}">
+        <xacro:unless value="${dof_val == '6'}">
             <xacro:property name="base_rpy" value="0 0 0"/>
         </xacro:unless>
     </xacro:if>
@@ -61,10 +61,10 @@
     </joint>
 
     <!-- Robot links and joints (base_link → jaw_link) -->
-    <xacro:if value="${'$(arg dof_type)' == 'dof_5'}">
+    <xacro:if value="${'$(arg dof)' == '5'}">
         <xacro:include filename="$(find so101_description)/urdf/robots/5dof_so101_arm.urdf.xacro" />
     </xacro:if>
-    <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+    <xacro:if value="${'$(arg dof)' == '6'}">
         <xacro:include filename="$(find so101_description)/urdf/robots/6dof_so101_arm.urdf.xacro" />
     </xacro:if>
 

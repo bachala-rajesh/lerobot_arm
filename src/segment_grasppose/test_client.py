@@ -7,7 +7,7 @@ import sys
 import rclpy
 from rclpy.node import Node
 
-from so101_interfaces.srv import FindGraspPose
+from project_interfaces.srv import FindGraspPose
 
 SERVICE = '/segment_grasppose/find_grasp_pose'
 

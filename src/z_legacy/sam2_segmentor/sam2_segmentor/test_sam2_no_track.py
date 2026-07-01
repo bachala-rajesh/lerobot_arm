@@ -6,6 +6,7 @@ Steps:
   2. Send that bbox to sam2/segment with track=false.
   3. Print result: score, centroid, mask pixel count.
 """
+
 from __future__ import annotations
 
 import sys
@@ -15,7 +16,7 @@ from rclpy.action import ActionClient
 from rclpy.node import Node
 
 from scene_db import SceneDB
-from so101_interfaces.action import SegmentObject
+from project_interfaces.action import SegmentObject
 
 
 class NoTrackTestClient(Node):
@@ -42,7 +43,9 @@ class NoTrackTestClient(Node):
         # ── 2. wait for action server ──────────────────────────────
         self.get_logger().info("Waiting for sam2/segment action server...")
         if not self._client.wait_for_server(timeout_sec=10.0):
-            self.get_logger().error("Action server not available after 10s. Is sam2_node running?")
+            self.get_logger().error(
+                "Action server not available after 10s. Is sam2_node running?"
+            )
             return
 
         # ── 3. build goal ──────────────────────────────────────────
@@ -83,7 +86,9 @@ class NoTrackTestClient(Node):
         print(f"  score      : {res.score:.3f}")
         print(f"  centroid   : u={res.centroid_u:.1f}  v={res.centroid_v:.1f}")
         print(f"  mask size  : {res.mask_width} x {res.mask_height}")
-        print(f"  mask pixels: {mask_pixels} / {total_pixels}  ({100*mask_pixels/max(total_pixels,1):.1f}%)")
+        print(
+            f"  mask pixels: {mask_pixels} / {total_pixels}  ({100 * mask_pixels / max(total_pixels, 1):.1f}%)"
+        )
         print("────────────────────────────────────────────\n")
 
 

@@ -2,10 +2,10 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>scene_localizer</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>Fills 3D world coordinates for pending detections in scene_db using OAK-D depth and TF (camera-to-world from apriltags_localization).</description>
   <maintainer email="bachala_rajesh@outlook.com">Bachala Rajesh</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
@@ -16,9 +16,6 @@
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>tf2_geometry_msgs</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
-
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

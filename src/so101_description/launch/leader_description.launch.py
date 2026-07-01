@@ -44,7 +44,7 @@ def generate_launch_description() -> LaunchDescription:
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
         ' arm_prefix:=leader',
-        ' dof_type:=dof_5',
+        ' dof:=5',
         ' command:=', leader_command,
         ' usb_port:=', leader_usb_port,
         ' joint_config_file:=', leader_joint_config_file,

@@ -33,7 +33,7 @@ class RosBridge:
     def __init__(self) -> None:
         import rclpy
         from rclpy.node import Node
-        from so101_interfaces.srv import DetectObjects  # ← real service type
+        from project_interfaces.srv import DetectObjects  # ← real service type
 
         rclpy.init()
         self.node = Node("langgraph_bridge")
@@ -56,7 +56,7 @@ class RosBridge:
     def call_detect_objects(self, prompt: str) -> str:
         """Call /vlm/detect_objects. Returns formatted string for LLM."""
         import rclpy
-        from so101_interfaces.srv import DetectObjects
+        from project_interfaces.srv import DetectObjects
 
         # TODO: build request
         req = DetectObjects.Request()

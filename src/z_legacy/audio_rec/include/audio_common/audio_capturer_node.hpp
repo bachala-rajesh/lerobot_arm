@@ -6,7 +6,7 @@
 #include <portaudio.h>
 #include <rclcpp/rclcpp.hpp>
 
-#include "so101_interfaces/msg/audio_stamped.hpp"
+#include "project_interfaces/msg/audio_stamped.hpp"
 
 namespace audio_common {
 
@@ -25,7 +25,7 @@ private:
   int chunk_;
   std::string frame_id_;
 
-  rclcpp::Publisher<so101_interfaces::msg::AudioStamped>::SharedPtr audio_pub_;
+  rclcpp::Publisher<project_interfaces::msg::AudioStamped>::SharedPtr audio_pub_;
 
   // Methods
   std::vector<int16_t> read_data();

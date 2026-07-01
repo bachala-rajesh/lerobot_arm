@@ -79,7 +79,7 @@ class RosBridge:
         import rclpy
         from rclpy.executors import SingleThreadedExecutor
         from rclpy.node import Node
-        from so101_interfaces.srv import DetectObjects
+        from project_interfaces.srv import DetectObjects
 
         rclpy.init()
         self.node = Node("voice_agent_bridge")
@@ -96,7 +96,7 @@ class RosBridge:
         self.node.get_logger().info("RosBridge started.")
 
     def call_detect_objects(self, prompt: str) -> str:
-        from so101_interfaces.srv import DetectObjects
+        from project_interfaces.srv import DetectObjects
 
         if not self._detect_client.wait_for_service(timeout_sec=3.0):
             return "ERROR: /vlm/detect_objects service not available."

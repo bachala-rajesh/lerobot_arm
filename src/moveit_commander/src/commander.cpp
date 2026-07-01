@@ -4,14 +4,14 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
-#include <so101_interfaces/msg/pose_command.hpp>
+#include <project_interfaces/msg/pose_command.hpp>
 
 
 
 using MoveGroupInterface = moveit::planning_interface::MoveGroupInterface;
 using Bool = std_msgs::msg::Bool;
 using FloatArray = std_msgs::msg::Float64MultiArray;
-using PoseCmd = so101_interfaces::msg::PoseCommand;
+using PoseCmd = project_interfaces::msg::PoseCommand;
 using namespace std::placeholders;
 
 class Commander

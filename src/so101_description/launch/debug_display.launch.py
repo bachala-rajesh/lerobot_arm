@@ -13,7 +13,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_gui = LaunchConfiguration("use_gui")
     joint_states_topic = LaunchConfiguration("joint_states_topic")
-    dof_type = LaunchConfiguration("dof_type")
+    dof = LaunchConfiguration("dof")
 
     pkg_path = os.path.join(get_package_share_directory("so101_description"))
     xacro_file = os.path.join(pkg_path, "urdf", "so101_arm_with_control.urdf.xacro")
@@ -24,7 +24,7 @@ def generate_launch_description():
             ' ', xacro_file,
             ' arm_prefix:=follower',
             ' moveit_status:=true',
-            ' dof_type:=', dof_type,
+            ' dof:=', dof,
         ]),
         value_type=str,
     )
@@ -85,9 +85,9 @@ def generate_launch_description():
                 description="Use sim time if true",
             ),
             DeclareLaunchArgument(
-                "dof_type",
-                default_value="dof_5",
-                description="Arm variant: dof_5 (default) or dof_6 (6DOF wrist_yaw)",
+                "dof",
+                default_value="5",
+                description="Arm variant: 5 (default) or 6 (6DOF wrist_yaw)",
             ),
             DeclareLaunchArgument(
                 "use_gui",

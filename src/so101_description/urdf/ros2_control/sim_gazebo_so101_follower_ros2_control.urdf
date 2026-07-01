@@ -25,7 +25,7 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
       </joint>
-      <xacro:if value="${'$(arg dof_type)' == 'dof_6'}">
+      <xacro:if value="${'$(arg dof)' == '6'}">
       <joint name="wrist_yaw">
         <command_interface name="position" />
         <state_interface name="position"/>

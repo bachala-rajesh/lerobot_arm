@@ -16,10 +16,10 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     sim_mode = LaunchConfiguration('sim_mode', default='real_robot')
-    dof_type = LaunchConfiguration('dof_type', default='dof_5')
+    dof = LaunchConfiguration('dof', default='5')
 
     controllers_yaml = PythonExpression([
-        "'", controllers_yaml_6dof, "' if '", dof_type, "' == 'dof_6' else '", controllers_yaml_5dof, "'"
+        "'", controllers_yaml_6dof, "' if '", dof, "' == '6' else '", controllers_yaml_5dof, "'"
     ])
 
     # ros2_control_node — skipped in Gazebo (Gazebo spawns its own via the URDF plugin)
@@ -80,9 +80,9 @@ def generate_launch_description():
             description='Hardware mode: real_robot, gazebo, or isaacsim',
         ),
         DeclareLaunchArgument(
-            'dof_type',
-            default_value='dof_5',
-            description='Follower arm variant: dof_5 or dof_6',
+            'dof',
+            default_value='5',
+            description='Follower arm variant: 5 or 6',
         ),
 
         controller_manager_group,

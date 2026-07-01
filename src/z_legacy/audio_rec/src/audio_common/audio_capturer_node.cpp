@@ -5,7 +5,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include "audio_common/audio_capturer_node.hpp"
-#include "so101_interfaces/msg/audio_stamped.hpp"
+#include "project_interfaces/msg/audio_stamped.hpp"
 
 using namespace audio_common;
 
@@ -61,7 +61,7 @@ AudioCapturerNode::AudioCapturerNode() : Node("audio_capturer_node") {
   }
 
   this->audio_pub_ =
-      this->create_publisher<so101_interfaces::msg::AudioStamped>(
+      this->create_publisher<project_interfaces::msg::AudioStamped>(
           "audio", rclcpp::SensorDataQoS());
 
   RCLCPP_INFO(this->get_logger(), "AudioCapturer node started");
@@ -76,7 +76,7 @@ AudioCapturerNode::~AudioCapturerNode() {
 void AudioCapturerNode::work() {
   while (rclcpp::ok()) {
 
-    auto msg = so101_interfaces::msg::AudioStamped();
+    auto msg = project_interfaces::msg::AudioStamped();
     msg.header.frame_id = this->frame_id_;
     msg.header.stamp = this->get_clock()->now();
 

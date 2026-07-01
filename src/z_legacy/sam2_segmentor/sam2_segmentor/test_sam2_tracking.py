@@ -7,6 +7,7 @@ Steps:
   3. Print centroid feedback every frame for TRACK_SECONDS.
   4. Cancel the goal cleanly.
 """
+
 from __future__ import annotations
 
 import time
@@ -16,7 +17,7 @@ from rclpy.action import ActionClient
 from rclpy.node import Node
 
 from scene_db import SceneDB
-from so101_interfaces.action import SegmentObject
+from project_interfaces.action import SegmentObject
 
 # How long to run tracking before cancelling
 TRACK_SECONDS: float = 10.0
@@ -59,7 +60,9 @@ class TrackingTestClient(Node):
         # ── 2. wait for action server ──────────────────────────────
         self.get_logger().info("Waiting for sam2/segment action server...")
         if not self._client.wait_for_server(timeout_sec=10.0):
-            self.get_logger().error("Action server not available. Is sam2_node running?")
+            self.get_logger().error(
+                "Action server not available. Is sam2_node running?"
+            )
             return
 
         # ── 3. build goal ──────────────────────────────────────────
@@ -116,7 +119,9 @@ class TrackingTestClient(Node):
             total_pixels = res.mask_height * res.mask_width
             print(f"  last score : {res.score:.3f}")
             print(f"  last centroid : ({res.centroid_u:.1f}, {res.centroid_v:.1f})")
-            print(f"  last mask  : {mask_pixels}/{total_pixels} px ({100*mask_pixels/max(total_pixels,1):.1f}%)")
+            print(
+                f"  last mask  : {mask_pixels}/{total_pixels} px ({100 * mask_pixels / max(total_pixels, 1):.1f}%)"
+            )
         print("────────────────────────────────────────────\n")
 
 

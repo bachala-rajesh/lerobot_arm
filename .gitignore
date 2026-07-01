@@ -4,6 +4,7 @@ log/
 __pycache__/
 *.pyc
 *.so
+*.db
 .vscode/
 
 src/temp/

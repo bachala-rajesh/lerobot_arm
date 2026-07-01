@@ -2,15 +2,12 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>oakd_camera</name>
-  <version>0.0.0</version>
-  <description>This package is about image processing and its related functionalities.</description>
-  <maintainer email="todo@todo.todo">rajesh</maintainer>
+  <version>0.1.0</version>
+  <description>Launch and config files for the Luxonis OAK-D camera — real hardware and Gazebo simulation</description>
+  <maintainer email="bachala_rajesh@outlook.com">Bachala Rajesh</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
   <depend>depthai_ros_driver</depend>
   <depend>depthai_descriptions</depend>
   <exec_depend>xacro</exec_depend>

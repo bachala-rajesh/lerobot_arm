@@ -23,13 +23,13 @@ def generate_launch_description() -> LaunchDescription:
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     sim_mode = LaunchConfiguration('sim_mode', default='real_robot')
-    dof_type = LaunchConfiguration('dof_type', default='dof_5')
+    dof = LaunchConfiguration('dof', default='5')
     follower_usb_port = LaunchConfiguration('follower_usb_port', default='/dev/lerobot_follower')
     follower_joint_config_file = LaunchConfiguration('follower_joint_config_file', default='')
 
-    # Select the correct controllers YAML based on dof_type (used for Gazebo sim_mode only)
+    # Select the correct controllers YAML based on dof (used for Gazebo sim_mode only)
     controllers_yaml_filename = PythonExpression([
-        "'so101_follower_6dof_controllers.yaml' if '", dof_type, "' == 'dof_6' else 'so101_follower_controllers.yaml'"
+        "'so101_follower_6dof_controllers.yaml' if '", dof, "' == '6' else 'so101_follower_controllers.yaml'"
     ])
     gazebo_controllers_yaml = PathJoinSubstitution([
         FindPackageShare('so101_control'), 'config', controllers_yaml_filename
@@ -46,7 +46,7 @@ def generate_launch_description() -> LaunchDescription:
         ' ', arm_xacro_path,
         ' sim_mode:=', sim_mode,
         ' arm_prefix:=follower',
-        ' dof_type:=', dof_type,
+        ' dof:=', dof,
         ' usb_port:=', follower_usb_port,
         ' joint_config_file:=', follower_joint_config_file,
         ' gazebo_controllers_config:=', gazebo_controllers_yaml,
@@ -121,9 +121,9 @@ def generate_launch_description() -> LaunchDescription:
             description='Hardware mode: real_robot, gazebo, or isaacsim',
         ),
         DeclareLaunchArgument(
-            'dof_type',
-            default_value='dof_5',
-            description='Arm variant: dof_5 (default) or dof_6 (6DOF wrist_yaw)',
+            'dof',
+            default_value='5',
+            description='Arm variant: 5 (default) or 6 (6DOF wrist_yaw)',
         ),
         DeclareLaunchArgument(
             'follower_usb_port',

@@ -11,7 +11,7 @@
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-  <depend>so101_interfaces</depend>
+  <depend>project_interfaces</depend>
   <depend>portaudio19-dev</depend>
 
   <export>

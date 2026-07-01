@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_srvs REQUIRED)
-find_package(so101_interfaces REQUIRED)
+find_package(project_interfaces REQUIRED)
 find_library(PORTAUDIO_LIB portaudio REQUIRED)
 
 
@@ -34,7 +34,7 @@ target_link_libraries(audio_capturer_node
 ament_target_dependencies(audio_capturer_node
   rclcpp
   std_srvs
-  so101_interfaces
+  project_interfaces
 )
 install(TARGETS
   audio_capturer_node
