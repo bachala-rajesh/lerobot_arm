@@ -51,5 +51,60 @@
     </include>
 
 
+
+    <!-- Red open-top bin (12x10x8 cm, 1 cm walls) -->
+    <model name="red_bin">
+      <static>true</static>
+      <pose>0.12 0.0 1.0 0 0 0</pose>
+      <link name="bin_link">
+        <collision name="floor_col"><pose>0 0 0.0025 0 0 0</pose><geometry><box><size>0.12 0.10 0.005</size></box></geometry></collision>
+        <visual name="floor_vis"><pose>0 0 0.0025 0 0 0</pose><geometry><box><size>0.12 0.10 0.005</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse><specular>0.2 0.1 0.1 1</specular></material></visual>
+
+        <collision name="front_col"><pose>0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry></collision>
+        <visual name="front_vis"><pose>0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse><specular>0.2 0.1 0.1 1</specular></material></visual>
+
+        <collision name="back_col"><pose>-0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry></collision>
+        <visual name="back_vis"><pose>-0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse><specular>0.2 0.1 0.1 1</specular></material></visual>
+
+        <collision name="right_col"><pose>0 0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry></collision>
+        <visual name="right_vis"><pose>0 0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse><specular>0.2 0.1 0.1 1</specular></material></visual>
+
+        <collision name="left_col"><pose>0 -0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry></collision>
+        <visual name="left_vis"><pose>0 -0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse><specular>0.2 0.1 0.1 1</specular></material></visual>
+      </link>
+    </model>
+
+    <!-- Blue open-top bin (12x10x8 cm, 1 cm walls) -->
+    <model name="blue_bin">
+      <static>true</static>
+      <pose>-0.12 0.0 1.0 0 0 0</pose>
+      <link name="bin_link">
+        <collision name="floor_col"><pose>0 0 0.0025 0 0 0</pose><geometry><box><size>0.12 0.10 0.005</size></box></geometry></collision>
+        <visual name="floor_vis"><pose>0 0 0.0025 0 0 0</pose><geometry><box><size>0.12 0.10 0.005</size></box></geometry>
+          <material><ambient>0.1 0.1 0.8 1</ambient><diffuse>0.1 0.1 0.8 1</diffuse><specular>0.1 0.1 0.2 1</specular></material></visual>
+
+        <collision name="front_col"><pose>0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry></collision>
+        <visual name="front_vis"><pose>0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry>
+          <material><ambient>0.1 0.1 0.8 1</ambient><diffuse>0.1 0.1 0.8 1</diffuse><specular>0.1 0.1 0.2 1</specular></material></visual>
+
+        <collision name="back_col"><pose>-0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry></collision>
+        <visual name="back_vis"><pose>-0.0575 0 0.04 0 0 0</pose><geometry><box><size>0.005 0.10 0.08</size></box></geometry>
+          <material><ambient>0.1 0.1 0.8 1</ambient><diffuse>0.1 0.1 0.8 1</diffuse><specular>0.1 0.1 0.2 1</specular></material></visual>
+
+        <collision name="right_col"><pose>0 0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry></collision>
+        <visual name="right_vis"><pose>0 0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry>
+          <material><ambient>0.1 0.1 0.8 1</ambient><diffuse>0.1 0.1 0.8 1</diffuse><specular>0.1 0.1 0.2 1</specular></material></visual>
+
+        <collision name="left_col"><pose>0 -0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry></collision>
+        <visual name="left_vis"><pose>0 -0.0475 0.04 0 0 0</pose><geometry><box><size>0.12 0.005 0.08</size></box></geometry>
+          <material><ambient>0.1 0.1 0.8 1</ambient><diffuse>0.1 0.1 0.8 1</diffuse><specular>0.1 0.1 0.2 1</specular></material></visual>
+      </link>
+    </model>
+
   </world>
 </sdf>

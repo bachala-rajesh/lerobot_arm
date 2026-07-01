@@ -23,7 +23,7 @@ from openai import OpenAI
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import CompressedImage, Image
 
 from scene_db import SceneDB
 from so101_interfaces.srv import DetectObjects
@@ -72,6 +72,7 @@ class VlmNode(Node):
         self.declare_parameter("write_to_db", True)
         self.declare_parameter("detector_name", "vlm")
         self.declare_parameter("source_frame", "oak_rgb_camera_optical_frame")
+        self.declare_parameter("compressed", True)  # false = sim (raw Image)
 
         self._service_name: str = (
             self.get_parameter("service_name").get_parameter_value().string_value
@@ -103,6 +104,9 @@ class VlmNode(Node):
         self._source_frame: str = (
             self.get_parameter("source_frame").get_parameter_value().string_value
         )
+        self._compressed: bool = (
+            self.get_parameter("compressed").get_parameter_value().bool_value
+        )
 
         # Open scene_db only if writing is enabled.
         self._db: SceneDB | None = SceneDB() if self._write_to_db else None
@@ -126,13 +130,22 @@ class VlmNode(Node):
         # --- callback group ---
         cb_group = ReentrantCallbackGroup()
 
-        self._image_sub = self.create_subscription(
-            CompressedImage,
-            "image_compressed",
-            self._image_cb,
-            qos_profile=10,
-            callback_group=cb_group,
-        )
+        if self._compressed:
+            self._image_sub = self.create_subscription(
+                CompressedImage,
+                "image_compressed",
+                self._image_cb,
+                qos_profile=10,
+                callback_group=cb_group,
+            )
+        else:
+            self._image_sub = self.create_subscription(
+                Image,
+                "image_compressed",  # same internal name — remapped in launch
+                self._image_raw_cb,
+                qos_profile=10,
+                callback_group=cb_group,
+            )
 
         self._srv = self.create_service(
             DetectObjects,
@@ -153,7 +166,15 @@ class VlmNode(Node):
         with self._frame_lock:
             self._latest_frame = frame
             self._latest_stamp = msg.header.stamp
-        
+
+    def _image_raw_cb(self, msg: Image) -> None:
+        """For sim: decode raw Image (no cv_bridge — numpy only)."""
+        frame = np.frombuffer(msg.data, dtype=np.uint8).reshape((msg.height, msg.width, -1))
+        if msg.encoding == "rgb8":
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        with self._frame_lock:
+            self._latest_frame = frame.copy()
+            self._latest_stamp = msg.header.stamp
 
     def _handle_detect(
         self, request: DetectObjects.Request, response: DetectObjects.Response

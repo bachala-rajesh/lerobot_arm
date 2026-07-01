@@ -61,16 +61,25 @@ def visualise(resp: DetectObjects.Response, image_topic: str) -> None:
     """Subscribe to the live camera once, draw bboxes, show with OpenCV."""
     import cv2
     import numpy as np
-    from sensor_msgs.msg import CompressedImage
+    from sensor_msgs.msg import CompressedImage, Image
 
     node = rclpy.create_node("vlm_test_viewer")
     got_frame: dict = {"frame": None}
 
-    def cb(msg: CompressedImage) -> None:
-        arr = np.frombuffer(msg.data, dtype=np.uint8)
-        got_frame["frame"] = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    is_compressed = image_topic.endswith("/compressed")
 
-    node.create_subscription(CompressedImage, image_topic, cb, 10)
+    if is_compressed:
+        def cb(msg: CompressedImage) -> None:
+            arr = np.frombuffer(msg.data, dtype=np.uint8)
+            got_frame["frame"] = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+        node.create_subscription(CompressedImage, image_topic, cb, 10)
+    else:
+        def cb(msg: Image) -> None:  # type: ignore[misc]
+            frame = np.frombuffer(msg.data, dtype=np.uint8).reshape((msg.height, msg.width, -1))
+            if msg.encoding == "rgb8":
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            got_frame["frame"] = frame.copy()
+        node.create_subscription(Image, image_topic, cb, 10)
 
     # Spin briefly to grab one frame
     end_time = node.get_clock().now().nanoseconds + int(3.0 * 1e9)

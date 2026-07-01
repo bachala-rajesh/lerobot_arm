@@ -12,10 +12,11 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 
- rosidl_generate_interfaces(${PROJECT_NAME}
+rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PoseCommand.msg"
   "msg/AudioData.msg"
   "msg/AudioInfo.msg"
@@ -25,12 +26,14 @@ find_package(rosidl_default_generators REQUIRED)
   "action/SegmentObject.action"
   "srv/MusicPlay.srv"
   "srv/DetectObjects.srv"
-  DEPENDENCIES std_msgs
+  "srv/FindGraspPose.srv"
+  DEPENDENCIES std_msgs geometry_msgs
 )
 
 ament_export_dependencies(
-  std_msgs  
+  std_msgs
+  geometry_msgs
   rosidl_default_runtime
-  )
+)
 
 ament_package()

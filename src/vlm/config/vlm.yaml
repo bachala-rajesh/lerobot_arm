@@ -21,6 +21,6 @@ vlm_node:
     # Tag rows with this string so we know which detector produced them.
     detector_name: "vlm"
 
-    # TF frame the bbox pixels are in (camera optical frame). The
+    # TF frame the bbox pixels are in (camera optical frame). Thel
     # localizer uses this to transform 3D points into the world frame.
     source_frame: "oak_rgb_camera_optical_frame"

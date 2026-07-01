@@ -1,0 +1,11 @@
+# FindGraspPose.srv
+# Called by LangGraph to find a grasp pose for an object in the scene.
+# Provide object_label (node queries scene_db) OR bboxes_xyxy directly.
+
+string object_label        # e.g. "cup" — node queries scene_db for bboxes
+float64[] bboxes_xyxy      # [x1,y1,x2,y2,...] flat; overrides object_label if set
+
+---
+bool success
+string message
+geometry_msgs/PoseStamped[] grasp_poses   # ranked best-first
