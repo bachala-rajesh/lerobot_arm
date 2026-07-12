@@ -18,7 +18,6 @@ A row is "pending localization" while world_x IS NULL.
 """
 from __future__ import annotations
 
-import os
 import sqlite3
 import threading
 import time
@@ -26,9 +25,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-DEFAULT_DB_PATH: Path = Path(
-    os.environ.get("SCENE_DB_PATH", str(Path.home() / "workspaces" / "lerobot_ws" / "src" / "scene_db" / "scene.db"))
-)
+from ament_index_python.packages import get_package_prefix
+
+# scene.db lives in the scene_db install prefix. install/ is inside the mounted
+# workspace, so host and docker resolve to the SAME file (no $HOME, which differs by env).
+DEFAULT_DB_PATH: Path = Path(get_package_prefix("scene_db")) / "scene.db"
 
 
 # ---------------------------------------------------------------- record type

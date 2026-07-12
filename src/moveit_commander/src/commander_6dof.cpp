@@ -1,4 +1,19 @@
-// the composition method is used to create a node that commands a robot arm and gripper
+// 6DOF variant of the commander node.
+//
+// Same structure as commander.cpp — commands the "arm" and "gripper" MoveIt2
+// groups over ROS2 topics. The arm logic is group-name based, so the only
+// hard difference vs the 5dof node is the joint_command guard (6 values, not 5).
+//
+// 6dof arm joint order (chain order — how joint_command values map):
+//   [0] shoulder_pan
+//   [1] shoulder_lift
+//   [2] elbow_flex
+//   [3] wrist_flex
+//   [4] wrist_yaw     <- extra joint the 5dof arm does not have
+//   [5] wrist_roll
+//
+// Kept as a separate file (not merged into commander.cpp) so 6dof-only
+// features (e.g. using wrist_yaw) can be added here without touching 5dof.
 
 #include <rclcpp/rclcpp.hpp>
 #include <moveit/move_group_interface/move_group_interface.h>
@@ -49,7 +64,7 @@ public:
         planAndExecute(arm_);
     }
 
-    void goToPoseTarget(double x, double y, double z, 
+    void goToPoseTarget(double x, double y, double z,
                         double roll, double pitch, double yaw, bool cartesian_path=false)
     {
         tf2::Quaternion q;
@@ -133,14 +148,15 @@ private:
     {
         auto joints = msg.data;
 
-        if (joints.size() == 5) {
+        // 6dof arm — expect 6 values in chain order (see file header).
+        if (joints.size() == 6) {
             goToJointTarget(joints);
         }
     }
 
     void poseCmdCallback(const PoseCmd &msg)
     {
-        goToPoseTarget(msg.x, msg.y, msg.z, msg.roll, msg.pitch, msg.yaw, msg.cartesian_path);   
+        goToPoseTarget(msg.x, msg.y, msg.z, msg.roll, msg.pitch, msg.yaw, msg.cartesian_path);
     }
 
     std::shared_ptr<rclcpp::Node> node_;
@@ -156,7 +172,7 @@ private:
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<rclcpp::Node>("commander", "follower");
+    auto node = std::make_shared<rclcpp::Node>("commander_6dof", "follower");
     auto commander = Commander(node);
     rclcpp::spin(node);
     rclcpp::shutdown();

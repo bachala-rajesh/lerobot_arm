@@ -10,7 +10,7 @@ Depends on `apriltags_localization` to publish the `world → camera` TF.
 
 | File | Node name | Purpose |
 |------|-----------|---------|
-| `v1_localizer_node.py` | `localizer_node` | Polls `scene_db` for pending rows, fills `world_x/y/z` using depth + TF |
+| `localizer_node.py` | `localizer_node` | Polls `scene_db` for pending rows, fills `world_x/y/z` using depth + TF |
 
 ---
 

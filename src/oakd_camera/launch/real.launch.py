@@ -56,7 +56,23 @@ def generate_launch_description():
                     oak_config_yaml,
                     {"use_sim_time": use_sim_time},
                 ],
-            )
+            ),
+            # RGB is undistorted-color but not geometrically rectified
+            # (depthai_ros_driver has no rgb rectify param). Depth is aligned
+            # to RGB's rectified frame, so rectify RGB here for anything
+            # downstream that fuses it with depth (e.g. colored point cloud).
+            ComposableNode(
+                package="image_proc",
+                plugin="image_proc::RectifyNode",
+                name="oak_rgb_rectify",
+                remappings=[
+                    ("image", "/oak/rgb/image_raw"),
+                    ("camera_info", "/oak/rgb/camera_info"),
+                    ("image_rect", "/oak/rgb/image_rect"),
+                    ("image_rect/compressed", "/oak/rgb/image_rect/compressed"),
+                    
+                ],
+            ),
         ],
         output="screen",
     )

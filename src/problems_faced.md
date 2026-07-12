@@ -127,4 +127,9 @@
        - Requires ros-humble-moveit-ros-perception (provides the octomap updater plugins).
         
 
-        
+  9. VLM perception issue
+    - The VLM prompt for scene description is not detailed enough to describe the multiple objects of same type in the scene
+    - what if the scene is chnaged ?
+    - the occluded object are not well recognized- the class is wrong
+    - the results vary on call to call- need to set the temperature set
+    

@@ -1,0 +1,19 @@
+# SegmentObject.srv
+# Ask the sam2_service node to segment one object in the latest camera frame.
+# Give a label (node looks up its bbox in scene_db) OR a bbox directly.
+
+string label            # object name, e.g. "book" — node queries scene_db for its bbox
+int32[] bbox_xyxy       # optional [x1, y1, x2, y2]; if set (len 4), skips scene_db lookup
+---
+bool success
+string message
+
+# Binary mask, row-major (H*W), values 0 or 1. Rebuild with:
+#   np.array(mask_flat, np.uint8).reshape(mask_height, mask_width)
+uint8[] mask_flat
+int32 mask_height
+int32 mask_width
+
+float32 centroid_u      # mask centre, pixels (x)
+float32 centroid_v      # mask centre, pixels (y)
+float32 score           # SAM2 confidence for the returned mask

@@ -18,9 +18,9 @@ AprilTag-based robot localization. Detects 36h11 tags from camera images, estima
 
 | File | Purpose |
 |------|---------|
-| `detection_apriltags_tf.launch.py` | Tag detection using `apriltag_ros` (3rd party) |
-| `dt_detection_apriltags_tf.launch.py` | Tag detection using `dt_apriltags` (Duckietown library) |
-| `detection_real_apriltags_tf.launch.py` | Tag detection on real camera |
+| `detect_apriltag_ros_tf.launch.py` | Tag detection using `apriltag_ros` (3rd party) |
+| `detect_apriltags_node_sim.launch.py` | Tag detection on simulation using `dt_apriltags` (Duckietown library) |
+| `detect_apriltags_node_real.launch.py` | Tag detection on real camera using  `dt_apriltags` (Duckietown library)  |
 | `apriltag_world_localizer.launch.py` | World localizer node only |
 | `localize_apriltags.launch.py` | Full pipeline: detection + world localization |
 | `optimize_pose.launch.py` | Pose optimization from multiple tags |

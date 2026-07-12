@@ -8,21 +8,33 @@ find_package(std_msgs REQUIRED)
 find_package(project_interfaces REQUIRED)
 
 # c++ executables
-add_executable(commander src/commander.cpp)
-ament_target_dependencies(commander 
-                                  rclcpp 
-                                  moveit_ros_planning_interface 
-                                  std_msgs 
+add_executable(commander_5dof src/commander_5dof.cpp)
+ament_target_dependencies(commander_5dof
+                                  rclcpp
+                                  moveit_ros_planning_interface
+                                  std_msgs
                                   project_interfaces)
-add_executable(test_commander src/test_commander.cpp)
-ament_target_dependencies(test_commander
-                                  rclcpp 
+add_executable(commander_6dof src/commander_6dof.cpp)
+ament_target_dependencies(commander_6dof
+                                  rclcpp
+                                  moveit_ros_planning_interface
+                                  std_msgs
+                                  project_interfaces)
+add_executable(test_commander_5dof src/test_commander_5dof.cpp)
+ament_target_dependencies(test_commander_5dof
+                                  rclcpp
+                                  std_msgs)
+add_executable(test_commander_6dof src/test_commander_6dof.cpp)
+ament_target_dependencies(test_commander_6dof
+                                  rclcpp
                                   std_msgs)
 
 # install targets
 install(TARGETS
-  commander
-  test_commander
+  commander_5dof
+  commander_6dof
+  test_commander_5dof
+  test_commander_6dof
   DESTINATION lib/${PROJECT_NAME}/
 )
 

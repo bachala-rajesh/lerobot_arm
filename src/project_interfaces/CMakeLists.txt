@@ -19,6 +19,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/MusicPlay.srv"
   "srv/DetectObjects.srv"
   "srv/FindGraspPose.srv"
+  "srv/SegmentObject.srv"
   DEPENDENCIES std_msgs geometry_msgs
 )
 

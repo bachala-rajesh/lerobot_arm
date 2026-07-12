@@ -12,9 +12,30 @@ install(PROGRAMS
   RENAME segment_grasppose_node
 )
 
+
 install(PROGRAMS
-  test_client.py
+  segment_grasppose/sam2_service_node.py
   DESTINATION lib/${PROJECT_NAME}
+  RENAME sam2_service_node
+)
+
+install(PROGRAMS
+  segment_grasppose/test_sam2_service_client.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME test_service_client
+)
+
+install(PROGRAMS
+  segment_grasppose/grasppose_node.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME grasppose_node
+)
+
+
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()

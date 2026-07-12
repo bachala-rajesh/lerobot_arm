@@ -6,7 +6,7 @@ find_package(ament_cmake REQUIRED)
 ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
-  ${PROJECT_NAME}/v1_localizer_node.py
+  ${PROJECT_NAME}/localizer_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

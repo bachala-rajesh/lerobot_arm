@@ -1,3 +1,6 @@
 # TODO — moveit_commander
 
-- [ ] Add 6DOF arm support in `commander.cpp`. Currently the `Commander` class is hardcoded for 5 joints (`joints.size() == 5` check in `jointCmdCallback`). Need to handle the 6DOF variant where the arm group has 6 joints.
+- [x] Add 6DOF arm support. Done via a separate `commander_6dof` node
+      (`src/commander_6dof.cpp`) instead of editing `commander.cpp`, so 6dof-only
+      features can grow without touching the 5dof node. The `joint_command`
+      guard there expects 6 values; the extra joint is `wrist_yaw`.

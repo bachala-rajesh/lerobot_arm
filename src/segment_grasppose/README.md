@@ -50,7 +50,43 @@ Response: success, message, grasp_poses[]
 | File | Purpose |
 |------|---------|
 | `segment_grasppose/segment_grasppose_node.py` | Main node |
+| `segment_grasppose/sam2_view_node.py` | Live SAM2 viewer — centre-point prompt, shows mask overlay |
+| `segment_grasppose/sam2_scene_node.py` | Live SAM2 viewer — bbox from scene_db, shows mask overlay |
+| `test_sam2.py` | Standalone SAM2 test on one image file |
 | `test_client.py` | CLI test client — calls service with bboxes or label |
+
+---
+
+## SAM2 viewer node
+
+Subscribes to an image topic, runs SAM2 (one centre-point prompt) on the latest
+frame at `rate_hz`, and shows the mask overlay in an OpenCV window **and** on the
+`sam2_overlay` image topic.
+
+```bash
+ros2 run segment_grasppose sam2_view_node
+ros2 run segment_grasppose sam2_view_node --ros-args -p image_topic:=/oak/rgb/image_raw -p rate_hz:=2.0
+# headless: turn off the window, view the topic instead
+ros2 run segment_grasppose sam2_view_node --ros-args -p display:=false
+ros2 run rqt_image_view rqt_image_view /sam2_view_node/sam2_overlay
+```
+
+Needs `torchvision` installed (SAM2 dependency).
+
+---
+
+## SAM2 scene node
+
+Same idea as the viewer, but the prompt is the **first (most-recent) object bbox
+from `scene_db`** instead of a centre point. Shows the mask + bbox + label in a
+window. The scene_db must be populated first (run the VLM / localizer node).
+
+```bash
+ros2 run segment_grasppose sam2_scene_node
+ros2 run segment_grasppose sam2_scene_node --ros-args -p image_topic:=/oak/rgb/image_raw -p rate_hz:=1.0
+```
+
+Needs `torchvision` and a populated `scene_db`.
 
 ---
 

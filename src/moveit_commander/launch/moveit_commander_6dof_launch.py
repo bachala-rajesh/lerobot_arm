@@ -15,8 +15,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package="moveit_commander",
-            executable="commander",
-            name="commander",
+            executable="commander_6dof",
+            name="commander_6dof",
             namespace="follower",
             output="screen",
             parameters=[config],
