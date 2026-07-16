@@ -1,4 +1,0 @@
-/**:
-    ros__parameters:
-      global_tags_location_filename: sim_apriltags_global_location_gazebo_world.yaml
-

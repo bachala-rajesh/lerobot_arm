@@ -108,6 +108,7 @@ CallbackReturn FeetechHardwareInterface::load_yaml_config_and_warn_(JointIdConfi
 
 CallbackReturn FeetechHardwareInterface::configure_joints_(const JointIdConfigMap& yaml_by_id) {
   joint_ids_.assign(info_.joints.size(), 0);
+  position_scales_.assign(info_.joints.size(), 1.0);
 
   for (size_t i = 0; i < info_.joints.size(); ++i) {
     const auto& joint = info_.joints[i];
@@ -132,6 +133,17 @@ CallbackReturn FeetechHardwareInterface::configure_joints_(const JointIdConfigMa
 
     if (merged_params.find("offset") != merged_params.end()) {
       spdlog::warn("Joint '{}': 'offset' param is deprecated and ignored — use 'homing_offset' instead", joint_name);
+    }
+
+    // position_scale: servo radians -> URDF joint units. Only needed for prismatic joints
+    // driven by a rotary servo (e.g. 6dof rack-and-pinion gripper). Not written to the servo.
+    if (const auto scale_it = merged_params.find("position_scale"); scale_it != merged_params.end()) {
+      const double scale = std::stod(scale_it->second);
+      if (scale == 0.0) {
+        spdlog::error("Joint '{}': position_scale must not be 0", joint_name);
+        return CallbackReturn::ERROR;
+      }
+      position_scales_[i] = scale;
     }
 
     // Disable torque and unlock EPROM before writing parameters
@@ -266,10 +278,14 @@ hardware_interface::return_type FeetechHardwareInterface::read(const rclcpp::Tim
   ranges::for_each(data | ranges::views::enumerate, [&](const auto& values) {
     const auto& [index, readings] = values;
     state_hw_positions_[index] = feetech_driver::to_radians(
-        feetech_driver::from_sts(feetech_driver::WordBytes{.low = readings[0], .high = readings[1]}) -
-        feetech_driver::kStsMidpoint);
-    state_hw_velocities_[index] = feetech_driver::to_radians(
-        feetech_driver::from_sts(feetech_driver::WordBytes{.low = readings[2], .high = readings[3]}));
+                                     feetech_driver::from_sts(
+                                         feetech_driver::WordBytes{.low = readings[0], .high = readings[1]}) -
+                                     feetech_driver::kStsMidpoint) *
+                                 position_scales_[index];
+    state_hw_velocities_[index] =
+        feetech_driver::to_radians(
+            feetech_driver::from_sts(feetech_driver::WordBytes{.low = readings[2], .high = readings[3]})) *
+        position_scales_[index];
   });
   return hardware_interface::return_type::OK;
 }
@@ -286,7 +302,8 @@ hardware_interface::return_type FeetechHardwareInterface::write(const rclcpp::Ti
     // Only include joints with command interfaces
     if (!info_.joints[i].command_interfaces.empty()) {
       commanded_joint_ids.push_back(joint_ids_[i]);
-      commanded_positions.push_back(feetech_driver::from_radians(hw_positions_[i]) + feetech_driver::kStsMidpoint);
+      commanded_positions.push_back(feetech_driver::from_radians(hw_positions_[i] / position_scales_[i]) +
+                                    feetech_driver::kStsMidpoint);
       commanded_speeds.push_back(2400);       // Default speed
       commanded_accelerations.push_back(50);  // Default acceleration
     }

@@ -10,5 +10,5 @@ camera_optical_frame: "oak_rgb_camera_optical_frame"
 update_rate: 10.0
 
 tags:
-  "tag36h11:1": [0.30, 0.00, 0.00, 0.0, 0.0, 0.0]
+  "tag36h11:2": [0.104, 0.00, 0.00, 0.0, 0.0, 0.0]
   # "tag36h11:2": [0.40, 0.10, 0.00, 0.0, 0.0, 0.0]

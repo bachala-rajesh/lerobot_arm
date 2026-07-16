@@ -1,0 +1,33 @@
+# Joint range backup (6DOF)
+# Arm  : follower
+# Date : 2026-07-14 15:57:19
+
+joints:
+  shoulder_pan:
+    id: 1
+    range_min: 770
+    range_max: 3242
+  shoulder_lift:
+    id: 2
+    range_min: 972
+    range_max: 3243
+  elbow_flex:
+    id: 3
+    range_min: 1031
+    range_max: 3085
+  wrist_flex:
+    id: 4
+    range_min: 1172
+    range_max: 3134
+  wrist_yaw:
+    id: 5
+    range_min: 1050
+    range_max: 2962
+  wrist_roll:
+    id: 6
+    range_min: 1046
+    range_max: 3076
+  gripper:
+    id: 7
+    range_min: 1886
+    range_max: 3034

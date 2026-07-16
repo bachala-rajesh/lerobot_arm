@@ -133,3 +133,11 @@
     - the occluded object are not well recognized- the class is wrong
     - the results vary on call to call- need to set the temperature set
     
+
+
+
+  10. the 6dof urdf has differetn axes convention and different rotating axes compared to the 5dof arm
+    - some joints were rotating in the negative directions
+    solution: corrected the axes of rotation by matching it with real robot axes rotation
+
+    

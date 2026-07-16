@@ -60,7 +60,7 @@ JOINT_LIMITS_6DOF: Dict[str, Tuple[float, float]] = {
     "wrist_flex":    (-1.69,  1.38),
     "wrist_yaw":     (-1.40,  1.32),
     "wrist_roll":    (-3.08,  3.09),
-    "gripper":       (-0.013, 0.013),
+    "gripper":       (0.00,  1.30),
 }
 
 

@@ -1,0 +1,26 @@
+# Calibration backup (6DOF)
+# Arm  : follower
+# Date : 2026-07-14 15:54:50
+
+joints:
+  shoulder_pan:
+    id: 1
+    homing_offset: 1958
+  shoulder_lift:
+    id: 2
+    homing_offset: -1495
+  elbow_flex:
+    id: 3
+    homing_offset: -1658
+  wrist_flex:
+    id: 4
+    homing_offset: -1635
+  wrist_yaw:
+    id: 5
+    homing_offset: -1906
+  wrist_roll:
+    id: 6
+    homing_offset: 1049
+  gripper:
+    id: 7
+    homing_offset: 1187

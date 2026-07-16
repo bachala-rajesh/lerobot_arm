@@ -1,0 +1,28 @@
+# Extrinsic calibration input: follower_base_link -> oak-d-base-frame
+#
+# The unknown we are solving for is base -> camera. We cannot measure it by hand
+# (the optical centre is inside the lens, and rpy is not tape-measurable).
+# So we measure base -> tag instead, and let the camera do the hard half.
+#
+# Setup this was measured in:
+#   tag lies FLAT on the table, facing the ceiling
+#   camera sits above it, looking down at a slight angle
+
+world_frame: "follower_base_link"
+camera_frame: "oak-d-base-frame"                     # root of the OAK-D tree — must have no other parent
+camera_optical_frame: "oak_rgb_camera_optical_frame"
+update_rate: 10.0
+
+tags:
+  # [x, y, z, roll, pitch, yaw] — metres, radians
+  #
+  # The rpy is NOT 0,0,0. AprilTag does not use the ROS axis convention:
+  # viewed face-on, tag x = right, y = DOWN, z = INTO the paper.
+  # Tag lies face-up, so its z points at the floor — opposite base_link's z.
+  #
+  #   tag x = -base_y   (tag turned so its x faces the robot's right)
+  #   tag y = -base_x   (forced by the right-hand rule, not a free choice)
+  #   tag z = -base_z   (into the table)
+  #
+  # That matrix solves to roll=pi, pitch=0, yaw=-pi/2.
+  "tag36h11:1": [0.0, -0.100, 0.0, 3.14159, 0.0, -1.5708]

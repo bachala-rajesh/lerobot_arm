@@ -17,9 +17,10 @@ def generate_launch_description() -> LaunchDescription:
     pkg_bringup = get_package_share_directory('so101_bringup')
     pkg_description = get_package_share_directory('so101_description')
     pkg_control = get_package_share_directory('so101_control')
+    pkg_calibration = get_package_share_directory('calibration_and_setup')
 
     controllers_yaml = os.path.join(pkg_control, 'config', 'so101_controllers.yaml')
-    leader_calibration = os.path.join(pkg_bringup, 'config', 'so101_leader_calibration.yaml')
+    leader_calibration = os.path.join(pkg_calibration, 'config', 'so101_leader_calibration.yaml')
     description_launch_path = os.path.join(pkg_description, 'launch', 'leader_description.launch.py')
     
 

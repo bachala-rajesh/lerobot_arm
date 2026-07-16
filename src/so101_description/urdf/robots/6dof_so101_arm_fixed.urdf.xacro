@@ -172,7 +172,13 @@
     <origin rpy="0 0 0" xyz="0.025192 0.000209 0.066415"/>
     <parent link="$(arg arm_prefix)_base_link"/>
     <child link="$(arg arm_prefix)_shoulder_link"/>
-    <axis xyz="0.008727 -0.0 0.999962"/>
+    <!-- Axis negated (+Z -> -Z). PROVEN, not guessed: the 5dof arm is known-good, and its
+         shoulder_pan really turns about -Z (its axis line reads "0 0 1", but its origin
+         rpy="-3.14159 0 1.5708" rolls the frame 180 deg, so local +Z points down). Upstream's
+         CAD zeroes this servo the other way. Matches the hardware report.
+         Whole vector negated, so the ~0.5 deg CAD tilt survives.
+         Limits untouched: they bound the servo value, which an axis flip does not change. -->
+    <axis xyz="-0.008727 0.0 -0.999962"/>
     <limit lower="-2.06" upper="2.01" effort="3.35" velocity="2.0"/>
     <dynamics damping="0.6" friction="0.052"/>
   </joint>
@@ -243,7 +249,12 @@
     <origin rpy="0 0 0" xyz="0.029296 0.019056 0.036617"/>
     <parent link="$(arg arm_prefix)_wrist_pitch_link"/>
     <child link="$(arg arm_prefix)_wrist_yaw_link"/>
-    <axis xyz="0.014193 -5e-05 0.999899"/>
+    <!-- Axis negated (+Z -> -Z). INFERRED, NOT PROVEN — the 5dof arm has no wrist_yaw, so there
+         is nothing to compare against. Flipped because it is a turntable joint like shoulder_pan,
+         which IS proven flipped, and both come from the same CAD convention.
+         This is the one axis here that rests on a guess. If it renders backwards, negate it back
+         and nothing else needs to move. -->
+    <axis xyz="-0.014193 5e-05 -0.999899"/>
     <limit effort="3.35" lower="-1.40" upper="1.32" velocity="2.0"/>
     <dynamics damping="0.6" friction="0.052"/>
   </joint>
@@ -258,7 +269,12 @@
     <origin rpy="0 0 0" xyz="0.055567 -0.000176 -0.037221"/>
     <parent link="$(arg arm_prefix)_wrist_yaw_link"/>
     <child link="$(arg arm_prefix)_wrist_roll_link"/>
-    <axis xyz="0.999922 -0.008805 -0.008802"/>
+    <!-- Axis negated (+X -> -X). PROVEN: the known-good 5dof wrist_roll really turns about +Y
+         (its origin rpy="1.5708 0 3.14159" chains to that), and once the 6dof's 90 deg base yaw
+         is removed, upstream's +X lands on -Y — the opposite. Matches the hardware report.
+         Whole vector negated, so the ~0.5 deg CAD tilt survives.
+         Limits untouched: they bound the servo value, which an axis flip does not change. -->
+    <axis xyz="-0.999922 0.008805 0.008802"/>
     <limit effort="3.35" lower="-3.08" upper="3.09" velocity="2.0"/>
     <dynamics damping="0.6" friction="0.052"/>
   </joint>
@@ -277,6 +293,13 @@
     <origin rpy="0 0 0" xyz="0.04361 0.021616 0.020519"/>
     <parent link="$(arg arm_prefix)_wrist_roll_link"/>
     <child link="$(arg arm_prefix)_left_jaw_link"/>
+    <!-- ponytail: axis deliberately NOT negated, unlike pan/yaw/roll. The 5dof cross-check that
+         proved those does not apply here: the 5dof gripper is REVOLUTE (jaw pivots), this one is
+         PRISMATIC (jaw slides). Different mechanism -> comparing the two axes proves nothing.
+         The old "gripper is opposite" hardware report is also unusable: it was made while the
+         units bug rendered radians as metres, so the jaw was flying open by 1.3 m.
+         Test it after position_scale (0.02) is confirmed: command the gripper open. If it closes,
+         negate this vector and right_jaw_slider's to match. Limits stay either way. -->
     <axis xyz="0.008881 0.999923 0.008649"/>
     <limit effort="100" lower="0.00" upper="0.026" velocity="100"/>
   </joint>

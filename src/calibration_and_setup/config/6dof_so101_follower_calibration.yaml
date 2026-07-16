@@ -1,0 +1,42 @@
+joints:
+  shoulder_pan:
+    id: 1
+    homing_offset: 1958
+    range_min: 770
+    range_max: 3242
+
+  shoulder_lift:
+    id: 2
+    homing_offset: -1495
+    range_min: 972
+    range_max: 3243
+
+  elbow_flex:
+    id: 3
+    homing_offset: -1658
+    range_min: 1031
+    range_max: 3085
+
+  wrist_flex:
+    id: 4
+    homing_offset: -1635
+    range_min: 1172
+    range_max: 3134
+
+  wrist_yaw:
+    id: 5
+    homing_offset: 1906
+    range_min: 1050
+    range_max: 2962
+
+  wrist_roll:
+    id: 6
+    homing_offset: 1402
+    range_min: 911
+    range_max: 3010
+
+  gripper:
+    id: 7
+    homing_offset: 1187
+    range_min: 1886
+    range_max: 3034

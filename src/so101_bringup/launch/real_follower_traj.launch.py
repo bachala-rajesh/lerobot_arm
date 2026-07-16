@@ -17,11 +17,13 @@ def generate_launch_description() -> LaunchDescription:
     pkg_bringup = get_package_share_directory('so101_bringup')
     pkg_description = get_package_share_directory('so101_description')
     pkg_control = get_package_share_directory('so101_control')
+    pkg_calibration = get_package_share_directory('calibration_and_setup')
 
     controllers_yaml = os.path.join(pkg_control, 'config', 'so101_controllers.yaml')
-    follower_calibration = os.path.join(pkg_bringup, 'config', 'so101_follower_calibration.yaml')
+    follower_calibration_5dof = os.path.join(pkg_calibration, 'config', '5dof_so101_follower_calibration.yaml')
+    follower_calibration_6dof = os.path.join(pkg_calibration, 'config', '6dof_so101_follower_calibration.yaml')
     description_launch_path = os.path.join(pkg_description, 'launch', 'follower_description.launch.py')
-    
+
 
     #####################
     # Launch args
@@ -30,6 +32,10 @@ def generate_launch_description() -> LaunchDescription:
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     dof = LaunchConfiguration('dof', default='5')
     follower_usb_port = LaunchConfiguration('follower_usb_port', default='/dev/lerobot_follower')
+
+    follower_calibration = PythonExpression([
+        "'", follower_calibration_6dof, "' if '", dof, "' == '6' else '", follower_calibration_5dof, "'"
+    ])
 
     #####################
     # Description (scene + both arm RSPs + static TFs)
@@ -63,7 +69,7 @@ def generate_launch_description() -> LaunchDescription:
     return LaunchDescription([
         DeclareLaunchArgument(
             'dof',
-            default_value='5',
+            default_value='6',
             description='Follower arm variant: 5 or 6',
         ),
         DeclareLaunchArgument(

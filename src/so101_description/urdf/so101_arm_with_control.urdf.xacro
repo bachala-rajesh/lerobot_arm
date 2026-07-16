@@ -35,15 +35,36 @@
          Chosen automatically by sim_mode (and dof for the yaw).
            - gazebo : arm sits on the table (0, 0.40, 0.97). 6 mesh needs -90 deg yaw.
            - else   : world origin (0,0,0) -> REAL ROBOT SAFE default.-->
+
+    <!-- The dof==6 yaw is not a table fact, it is a CAD frame-convention fact:
+         at zero joints the 5 tip runs down base -Y, the 6 tip down base +X.
+         The -90 realigns 6 onto the 5 convention, but ONLY in the gazebo branch,
+         so real_robot dof:=6 still gets yaw 0 -> sim and real disagree by 90 deg
+         in the world frame. Harmless while 6 is sim-only; world-frame code on the
+         real 6 arm (scene_localizer, apriltag_world_localizer) would aim 90 deg
+         off. Decide then: apply the yaw in both branches, or rotate base_link in
+         6dof_so101_arm.urdf.xacro so both arms share one convention and this
+         dof special-case can be deleted. Check with:
+             ros2 run tf2_ros tf2_echo world follower_base_link -->
+
+    <!-- Compare args as quoted strings: '$(arg dof)' == '6'.
+         A property holding "6" is coerced to int by xacro, so ${dof_val == '6'}
+         is int-vs-str and silently False. -->
     <xacro:property name="sim_mode_val" value="$(arg sim_mode)"/>
-    <xacro:property name="dof_val"      value="$(arg dof)"/>
 
     <xacro:if value="${sim_mode_val == 'gazebo'}">
-        <xacro:property name="base_xyz" value="0 0.40 0.97"/>
-        <xacro:if value="${dof_val == '6'}">
+        <!-- z differs by dof: table top is at 1.0. The 5 mesh sits 3 cm above its own
+             base_link (base_so101_v2 visual origin z=0.0301, rolled +90 so mesh-y maps to
+             world-z), so 0.97 lands its lowest metal at 1.0001 — resting on the table. The 6
+             mesh (base_link.stl) starts at its origin, no offset, so the SAME 0.97 buries it
+             3 cm underground and shoulder_pan drives the base sideways through solid table ->
+             joint frozen. Lift the 6 to 1.0 so its base bottom sits on the surface. -->
+        <xacro:if value="${'$(arg dof)' == '6'}">
+            <xacro:property name="base_xyz" value="0 0.40 1.0"/>
             <xacro:property name="base_rpy" value="0 0 -1.5708"/>
         </xacro:if>
-        <xacro:unless value="${dof_val == '6'}">
+        <xacro:unless value="${'$(arg dof)' == '6'}">
+            <xacro:property name="base_xyz" value="0 0.40 0.97"/>
             <xacro:property name="base_rpy" value="0 0 0"/>
         </xacro:unless>
     </xacro:if>
@@ -65,7 +86,10 @@
         <xacro:include filename="$(find so101_description)/urdf/robots/5dof_so101_arm.urdf.xacro" />
     </xacro:if>
     <xacro:if value="${'$(arg dof)' == '6'}">
-        <xacro:include filename="$(find so101_description)/urdf/robots/6dof_so101_arm.urdf.xacro" />
+        <!-- _fixed = axis signs corrected to this arm's servo convention (pan/yaw/roll negated).
+             Swap back to 6dof_so101_arm.urdf.xacro to A/B the old behaviour. Delete the old file
+             once _fixed is confirmed on hardware. -->
+        <xacro:include filename="$(find so101_description)/urdf/robots/6dof_so101_arm_fixed.urdf.xacro" />
     </xacro:if>
 
 </robot>

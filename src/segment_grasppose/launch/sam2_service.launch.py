@@ -16,8 +16,8 @@ def generate_launch_description() -> LaunchDescription:
 
     sam2_service = Node(
         package="segment_grasppose",
-        executable="sam2_service",
-        name="sam2_service",
+        executable="sam2_service_node",  # matches CMakeLists RENAME
+        name="sam2_server",
         output="screen",
         parameters=[{"image_topic": image_topic}],
     )

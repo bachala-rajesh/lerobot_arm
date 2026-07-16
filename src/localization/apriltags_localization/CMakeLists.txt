@@ -6,8 +6,6 @@ find_package(ament_cmake REQUIRED)
 ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
-  apriltags_localization/detect_apriltags.py
-  apriltags_localization/optimize_pose.py
   apriltags_localization/apriltag_world_localizer.py
   DESTINATION lib/${PROJECT_NAME}
 )

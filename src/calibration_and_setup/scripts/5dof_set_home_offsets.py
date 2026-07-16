@@ -180,12 +180,12 @@ divider()
 print('  STEP 5 — SAVING CALIBRATION BACKUP')
 divider()
 
-# ament gives: {workspace}/install/so101_bringup/share/so101_bringup
+# ament gives: {workspace}/install/calibration_and_setup/share/calibration_and_setup
 # 4 levels up  →  workspace root
-# then down to: src/so101_bringup/config/calibration_data_backup
-pkg_share      = get_package_share_directory('so101_bringup')
+# then down to: src/calibration_and_setup/config/calibration_data_backup
+pkg_share      = get_package_share_directory('calibration_and_setup')
 workspace_root = os.path.normpath(os.path.join(pkg_share, *(['..'] * 4)))
-backup_dir     = os.path.join(workspace_root, 'src', 'so101_bringup', 'config', 'calibration_data_backup')
+backup_dir     = os.path.join(workspace_root, 'src', 'calibration_and_setup', 'config', 'calibration_data_backup')
 os.makedirs(backup_dir, exist_ok=True)
 
 now      = datetime.datetime.now()
@@ -207,10 +207,11 @@ print(f'  Saved: {filepath}')
 print()
 
 if all_ok:
+    target_file = '5dof_so101_follower_calibration.yaml' if args.arm == 'follower' else 'so101_leader_calibration.yaml'
     print('  All joints within ±20 ticks of 2048. Calibration successful.')
     print()
     print(f'  Next: copy the new_off values into')
-    print(f'  src/so101_bringup/config/so101_{args.arm}_calibration.yaml')
+    print(f'  src/calibration_and_setup/config/{target_file}')
     print(f'  then restart ROS2 so the driver writes them on startup.')
 else:
     print('  Some joints drifted beyond 20 ticks — arm moved during write.')

@@ -69,10 +69,9 @@ ctrl : pos (position) | traj (trajectory)  — omitted for base launches
 
 | File | Purpose |
 |------|---------|
-| `config/so101_follower_calibration.yaml` | Follower servo calibration (zero offsets) |
-| `config/so101_leader_calibration.yaml` | Leader servo calibration |
 | `config/gz_bridge.yaml` | Gazebo ↔ ROS2 topic bridge config |
-| `config/calibration_data_backup/` | Timestamped calibration backups |
+
+Servo calibration yaml files (`so101_follower_calibration.yaml`, `so101_leader_calibration.yaml`) and their timestamped backups now live in the `calibration_and_setup` package — launch files here read them via `get_package_share_directory('calibration_and_setup')`.
 
 ---
 
@@ -84,4 +83,5 @@ ctrl : pos (position) | traj (trajectory)  — omitted for base launches
 | `rviz/vis.rviz` | RViz config for general visualization |
 | `world/ignition_worlds/robot_arm_world.sdf` | Gazebo world SDF |
 | `lerobot/` | LeRobot utility imports (error types, encoding utils) |
-| `lerobot_sts_servo_scripts/` | One-time servo setup scripts (set home offsets, return level) |
+
+Servo setup/calibration scripts (set motor ID, set home offsets, set return level) moved to `calibration_and_setup` package.

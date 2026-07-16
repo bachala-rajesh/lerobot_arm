@@ -22,7 +22,7 @@ def generate_launch_description() -> LaunchDescription:
     controllers_yaml = os.path.join(pkg_control, 'config', 'so101_controllers.yaml')
     follower_calibration_5dof = os.path.join(pkg_calibration, 'config', '5dof_so101_follower_calibration.yaml')
     follower_calibration_6dof = os.path.join(pkg_calibration, 'config', '6dof_so101_follower_calibration.yaml')
-    description_launch_path = os.path.join(pkg_description, 'launch', 'follower_description.launch.py')
+    description_launch_path = os.path.join(pkg_description, 'launch', 'follower_description_torque_free.launch.py')
 
 
     #####################
@@ -54,7 +54,7 @@ def generate_launch_description() -> LaunchDescription:
 
     #control node
     control_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "follower_joints_position_control.launch.py")),
+        PythonLaunchDescriptionSource(os.path.join(pkg_control, "launch", "follower_joints_state_broadcaster.launch.py")),
         launch_arguments={
             "use_sim_time": use_sim_time,
             "sim_mode": sim_mode,

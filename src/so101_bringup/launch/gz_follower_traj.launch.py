@@ -71,7 +71,7 @@ def generate_launch_description() -> LaunchDescription:
             ),
             DeclareLaunchArgument(
                 "dof",
-                default_value="5",
+                default_value="6",
                 description="Follower arm variant: 5 or 6",
             ),
 

@@ -6,12 +6,6 @@ find_package(ament_cmake_python REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
-install(PROGRAMS
-  segment_grasppose/segment_grasppose_node.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME segment_grasppose_node
-)
-
 
 install(PROGRAMS
   segment_grasppose/sam2_service_node.py
@@ -26,9 +20,21 @@ install(PROGRAMS
 )
 
 install(PROGRAMS
-  segment_grasppose/grasppose_node.py
+  segment_grasppose/grasppose_server_node.py
   DESTINATION lib/${PROJECT_NAME}
-  RENAME grasppose_node
+  RENAME grasppose_server
+)
+
+install(PROGRAMS
+  segment_grasppose/test_grasppose_client_node.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME grasppose_client
+)
+
+install(PROGRAMS
+  segment_grasppose/segment_then_grasp_node.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME segment_then_grasp
 )
 
 
