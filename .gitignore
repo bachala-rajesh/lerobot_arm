@@ -21,5 +21,9 @@ research/
 
 .git-filter-repo-venv/
 .mcp.json
-.agentsroom/handoff-transcript-*.txt
-.agentsroom/handoff-summary-*.md
+.agentsroom/
+
+CHANGELOG.md
+cliff.toml
+DepthCamera_*.json
+DepthCapture_*.png
