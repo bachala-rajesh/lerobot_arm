@@ -140,4 +140,52 @@
     - some joints were rotating in the negative directions
     solution: corrected the axes of rotation by matching it with real robot axes rotation
 
+
+  11. 6DOF gripper — units + direction not verified (real robot)
+
+    Background:
+      - 5DOF gripper joint is REVOLUTE (jaw pivots) -> unit is radians -> position_scale = 1.0
+      - 6DOF gripper joint is PRISMATIC (jaws slide on rack-and-pinion) -> unit is METRES
+        -> the driver needs a radians->metres number = position_scale
+      - one servo drives the left jaw; right_jaw_slider mimics it with multiplier=-1
+      - the gripper axis was the ONLY joint left un-negated during the 6dof axis fix,
+        because the 5dof cross-check does not apply (revolute vs prismatic = different mechanism)
+
+    Two unknowns to check:
+      A. UNITS  — is position_scale (0.02 m/rad) correct? -> controls HOW FAR the jaw moves
+      B. DIRECTION — is the axis sign correct? -> controls WHICH WAY the jaw moves
+
+    How the driver uses position_scale (feetech_ros2_driver.cpp):
+      - read  (line ~284): state = servo_radians * position_scale
+      - write (line ~305): servo_radians = command_metres / position_scale
+      - set per dof in real_so101_follower_ros2_control.urdf: 6dof -> 0.02, 5dof -> 1.0
+
+    Test done (REAL robot, gui_sliders_arm_control.py):
+      - command 0.00 = closed, command 0.04 = fully open
+      - increasing value -> opens, decreasing -> closes
+
+    Findings:
+      B (direction) = CORRECT. increase opens. Do NOT negate the gripper axis.
+      A (units)     = MISMATCH found. three files disagree on the max:
+                        - GUI slider (JOINT_LIMITS_6DOF)          : 0.04
+                        - URDF <limit> (6dof_..._fixed.xacro)     : 0.026
+                        - position_scale math (0.02 * 1.30 rad)   : 0.026
+      -> the real test shows full-open needs command 0.04 = 0.04/0.02 = 2.0 rad of servo travel,
+         NOT the 1.30 rad the files assumed. So the old "26 mm at 1.30 rad" number is wrong.
+      -> the gripper WORKS on the real arm, but the "metres" label is unverified and the
+         GUI/URDF max values do not match.
+
+    Pending fix (Option 2 = proper, not yet applied):
+      1. measure real jaw travel at full open with a ruler -> D metres
+      2. set URDF gripper <limit> upper = D   (and right_jaw_slider lower = -D)
+      3. set GUI JOINT_LIMITS_6DOF gripper max = D
+      4. set position_scale = D / 2.0 rad
+      (Option 1 = quick: just raise URDF limit to 0.04, keep scale 0.02 -> works but the
+       digital-twin jaw distance may not match reality.)
+
+    Safety check still to confirm:
+      - at command 0.04, is the servo buzzing/straining against a hard stop?
+        if yes -> full-open is below 0.04 and 0.04 stalls the servo (lower the max).
+        commanding a position does NOT write EEPROM, so the test itself is safe.
+
     

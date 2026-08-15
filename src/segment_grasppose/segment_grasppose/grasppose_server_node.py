@@ -27,17 +27,16 @@ import sys
 import numpy as np
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
 from rclpy.time import Time
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs_py import point_cloud2
-from std_srvs.srv import Trigger
 from tf2_ros import Buffer, TransformListener
+
+from project_interfaces.srv import GraspFromCloud
 
 # AnyGraspModel / _show imported lazily inside the node — see __init__.
 # Keeping them out of module scope lets --selfcheck (pure numpy) run anywhere.
 
-CLOUD_TOPIC = "/oak/points"
 SERVICE = "/find_grasp_pose"
 TAG_FRAME = "tag36h11:1"  # AprilTag on the table; its +Z is the table normal
 
@@ -79,36 +78,26 @@ class GraspPoseServer(Node):
 
     def __init__(self) -> None:
         super().__init__("grasppose_server")
-        self._latest: PointCloud2 | None = None
 
         # tunable without a rebuild: which tag marks the table, and how much to
         # keep above it (0.0 = cut at the table, 0.01 = also strip its surface).
         self._tag_frame = self.declare_parameter("table_tag_frame", TAG_FRAME).value
         self._min_height = self.declare_parameter("table_min_height", 0.0).value
 
-        # TF: to look up the tag's pose in the cloud frame at request time.
+        # TF: to look up the tag's pose in the cloud frame at request time. The
+        # cloud comes from the request, but it still carries a header.frame_id.
         self._tf_buffer = Buffer()
         self._tf_listener = TransformListener(self._tf_buffer, self)
 
-        # Match the publisher: /oak/points is BEST_EFFORT, KEEP_LAST 5, VOLATILE
-        # (checked with `ros2 topic info /oak/points -v`). A reliable sub would
-        # not connect to a best-effort publisher at all.
-        self.create_subscription(
-            PointCloud2, CLOUD_TOPIC, self._on_cloud, qos_profile_sensor_data
-        )
-        self.create_service(Trigger, SERVICE, self._on_request)
+        self.create_service(GraspFromCloud, SERVICE, self._on_request)
 
         from segment_grasppose.anygrasp_model import AnyGraspModel
 
         self.get_logger().info("loading AnyGrasp (slow, once)...")
         self._model = AnyGraspModel()
         self.get_logger().info(
-            f"ready. cloud={CLOUD_TOPIC}  "
-            f"call: ros2 service call {SERVICE} std_srvs/srv/Trigger"
+            f"ready. service={SERVICE} (project_interfaces/srv/GraspFromCloud)"
         )
-
-    def _on_cloud(self, msg: PointCloud2) -> None:
-        self._latest = msg
 
     def _lookup_tag(
         self, cloud_frame: str
@@ -135,12 +124,12 @@ class GraspPoseServer(Node):
         )
 
     def _on_request(
-        self, request: Trigger.Request, response: Trigger.Response
-    ) -> Trigger.Response:
-        cloud = self._latest
-        if cloud is None:
+        self, request: GraspFromCloud.Request, response: GraspFromCloud.Response
+    ) -> GraspFromCloud.Response:
+        cloud = request.cloud
+        if cloud.width * cloud.height == 0:
             response.success = False
-            response.message = f"no cloud on {CLOUD_TOPIC} yet"
+            response.message = "empty cloud in request"
             self.get_logger().warn(response.message)
             return response
 
@@ -152,12 +141,16 @@ class GraspPoseServer(Node):
             points, colors, tag_t, tag_q, self._min_height
         )
         self.get_logger().info(f"cloud after cleaning: {len(points)} points")
+        if len(points) == 0:
+            response.success = False
+            response.message = "no points left after cleaning"
+            self.get_logger().warn(response.message)
+            return response
 
-        # lims=None -> box derived from the whole cloud (raw scene, "as is").
         gg = self._model.predict(points, colors)
         if gg is None:
             response.success = False
-            response.message = "no grasp found (raw scene — try cropping / lims)"
+            response.message = "no grasp found (try a different lims / min_height)"
             self.get_logger().warn(response.message)
             return response
 

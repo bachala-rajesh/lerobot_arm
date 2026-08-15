@@ -1,0 +1,8 @@
+# GraspFromCloud.srv
+# Run AnyGrasp on a point cloud the caller provides (already masked/cropped).
+# The caller owns segmentation; the grasp server only detects grasps.
+
+sensor_msgs/PointCloud2 cloud   # XYZRGB, in the camera frame
+---
+bool success
+string message

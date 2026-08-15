@@ -42,6 +42,7 @@ from rclpy.executors import SingleThreadedExecutor
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
+from sensor_msgs.msg import JointState
 
 
 JOINT_LIMITS_5DOF: Dict[str, Tuple[float, float]] = {
@@ -60,7 +61,7 @@ JOINT_LIMITS_6DOF: Dict[str, Tuple[float, float]] = {
     "wrist_flex":    (-1.69,  1.38),
     "wrist_yaw":     (-1.40,  1.32),
     "wrist_roll":    (-3.08,  3.09),
-    "gripper":       (0.00,  1.30),
+    "gripper":       (0.00,  0.04),
 }
 
 
@@ -74,19 +75,48 @@ class RosArmPositionsPublisher(Node):
             10
         )
         
+        # Subscribe to current arm state so the GUI can start at the present pose.
+        self._state_sub = self.create_subscription(
+            JointState,
+            f"/{arm_name}/joint_states",
+            self._state_callback,
+            10,
+        )
+        self._current_positions: Dict[str, float] = {}
+        self._state_event = threading.Event()
+
         self._timer = self.create_timer(0.1, self._timer_callback)
-        
-        self._latest_values : Dict[str, float] = {name: 0.0 for name in joint_names}
-        
+
+        # None until first joint_states arrives → timer does not publish 0.0 (prevents jump).
+        self._latest_values: Optional[Dict[str, float]] = None
+
+    def _state_callback(self, msg: JointState) -> None :
+        self._current_positions = dict(zip(msg.name, msg.position))
+        if self._latest_values is None:
+            # Seed command with the real pose so the first published value is a no-op.
+            self._latest_values = {
+                name: self._current_positions.get(name, 0.0)
+                for name in self._joint_names
+            }
+        self._state_event.set()
+
+    def wait_for_state(self, timeout_sec: float = 5.0) -> Dict[str, float] | None :
+        """Block until first joint_states arrives. Returns positions dict or None on timeout."""
+        if self._state_event.wait(timeout_sec):
+            return dict(self._current_positions)
+        return None
+
     def update_values(self, joint_values: Dict[str, float]) -> None :
         self._latest_values = joint_values
-        
-        
+
+
     def _timer_callback(self) -> None :
+        if self._latest_values is None:
+            return  # no state yet → publish nothing
         msg = Float64MultiArray()
         msg.data = [self._latest_values[name] for name in self._joint_names]
         self._pos_publisher.publish(msg)
-        
+
     def shutdown(self) -> None :
         self.destroy_node()
         rclpy.shutdown()
@@ -102,6 +132,7 @@ class JointSliderWidget(QWidget):
         joint_name: str,
         min_rad: float = -3.14,
         max_rad: float = 3.14,
+        init_rad: Optional[float] = None,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
@@ -123,7 +154,12 @@ class JointSliderWidget(QWidget):
         self.slider = QSlider(Qt.Orientation.Vertical)
         self.slider.setMinimum(0)
         self.slider.setMaximum(1000)
-        self.slider.setValue(500)  # center position
+        # Start at current pose if given, else center. Prevents robot jump on GUI open.
+        if init_rad is not None:
+            ratio = (init_rad - min_rad) / (max_rad - min_rad)
+            self.slider.setValue(max(0, min(1000, round(ratio * 1000))))
+        else:
+            self.slider.setValue(500)  # center position
         self.slider.setTickPosition(QSlider.TickPosition.NoTicks)
         self.slider.valueChanged.connect(self._on_slider_changed)
         layout.addWidget(self.slider)
@@ -166,13 +202,15 @@ class ArmSlidersWindow(QMainWindow):
     def __init__(self,
                  joint_names: List[str],
                  joint_limits: Dict[str, Tuple[float, float]],
-                 ros_arm_position_publisher_node: Optional[RosArmPositionsPublisher] = None) -> None:
+                 ros_arm_position_publisher_node: Optional[RosArmPositionsPublisher] = None,
+                 initial_positions: Optional[Dict[str, float]] = None) -> None:
         super().__init__()
 
         self.joint_names: List[str] = joint_names
         self.joint_limits: Dict[str, Tuple[float, float]] = joint_limits
         self.joint_widgets: Dict[str, JointSliderWidget] = {}
         self.ros_publisher_node: Optional[RosArmPositionsPublisher] = ros_arm_position_publisher_node
+        self.initial_positions: Dict[str, float] = initial_positions or {}
 
         self.setWindowTitle(f"SO-101 Arm Joint Sliders — {len(joint_names)-1}DOF")
 
@@ -187,7 +225,8 @@ class ArmSlidersWindow(QMainWindow):
 
         for idx, name in enumerate(self.joint_names):
             lo, hi = self.joint_limits.get(name, (-3.14, 3.14))
-            joint_widget = JointSliderWidget(name, min_rad=lo, max_rad=hi)
+            init = self.initial_positions.get(name)  # None → center fallback
+            joint_widget = JointSliderWidget(name, min_rad=lo, max_rad=hi, init_rad=init)
             sliders_layout.addWidget(joint_widget, 0, idx)
             self.joint_widgets[name] = joint_widget
 
@@ -274,8 +313,22 @@ def main() -> None:
     executor.add_node(ros_arm_position_publisher_node)
     ros_thread = threading.Thread(target=executor.spin, daemon=True)
     ros_thread.start()
-    
-    window = ArmSlidersWindow(joint_names, joint_limits, ros_arm_position_publisher_node=ros_arm_position_publisher_node)
+
+    # Wait for the arm's present pose before opening the GUI (prevents jump).
+    print(f"Waiting for /{arm_name}/joint_states ...")
+    initial_positions = ros_arm_position_publisher_node.wait_for_state(5.0)
+    if initial_positions is None:
+        print(f"ERROR: no /{arm_name}/joint_states in 5s. Is the arm running? Exiting.")
+        ros_arm_position_publisher_node.shutdown()
+        return
+    print(f"Got present pose: {initial_positions}")
+
+    window = ArmSlidersWindow(
+        joint_names,
+        joint_limits,
+        ros_arm_position_publisher_node=ros_arm_position_publisher_node,
+        initial_positions=initial_positions,
+    )
     window.show()
 
     # ensure ros2 shuts down whent he Qt app exits

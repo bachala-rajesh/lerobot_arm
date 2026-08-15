@@ -5,6 +5,7 @@ project(project_interfaces)
 find_package(ament_cmake REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 
@@ -20,12 +21,14 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/DetectObjects.srv"
   "srv/FindGraspPose.srv"
   "srv/SegmentObject.srv"
-  DEPENDENCIES std_msgs geometry_msgs
+  "srv/GraspFromCloud.srv"
+  DEPENDENCIES std_msgs geometry_msgs sensor_msgs
 )
 
 ament_export_dependencies(
   std_msgs
   geometry_msgs
+  sensor_msgs
   rosidl_default_runtime
 )
 
