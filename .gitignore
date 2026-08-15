@@ -9,12 +9,15 @@ __pycache__/
 
 src/temp/
 TODO
+.asoundrc
 
 
 src/test_pkg/
+src/z_*/
 CLAUDE.md
 AGENTS.md
-./claude/*
+.claude/
+research/
 
 .git-filter-repo-venv/
 .mcp.json
